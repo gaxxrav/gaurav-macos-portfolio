@@ -68,6 +68,14 @@ type SearchEntry = SpotlightResult & {
   file?: FileSystemItem;
 };
 
+type RenderTarget = {
+  appType: string;
+  title: string;
+  data?: Record<string, unknown>;
+};
+
+type MobileScreenState = RenderTarget | null;
+
 const wallpaperOptions: WallpaperOption[] = [
   {
     id: 'midnight',
@@ -393,6 +401,8 @@ function App() {
   const [unlockedAchievementIds, setUnlockedAchievementIds] = useState<AchievementId[]>([]);
   const [hasUnreadAchievement, setHasUnreadAchievement] = useState(false);
   const [achievementNotification, setAchievementNotification] = useState<AchievementNotification | null>(null);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  const [mobileScreen, setMobileScreen] = useState<MobileScreenState>(null);
 
   const inactivityTimeoutRef = useRef<number | null>(null);
   const notificationTimeoutRef = useRef<number | null>(null);
@@ -465,6 +475,14 @@ function App() {
   const openAchievementsWindow = () => {
     setHasUnreadAchievement(false);
     setIsSpotlightOpen(false);
+    if (isMobile) {
+      openMobileScreen({
+        title: 'Achievements',
+        appType: 'achievements',
+      });
+      return;
+    }
+
     const existingWindow = windows.find((window) => window.appType === 'achievements');
     if (existingWindow) {
       focusWindow(existingWindow.id);
@@ -540,6 +558,12 @@ function App() {
     if (storedAchievements) {
       setUnlockedAchievementIds(JSON.parse(storedAchievements) as AchievementId[]);
     }
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   useEffect(() => {
@@ -662,6 +686,13 @@ function App() {
     }
   };
 
+  const openMobileScreen = (screen: MobileScreenState) => {
+    setMobileScreen(screen);
+    if (screen) {
+      setCurrentApp(screen.title);
+    }
+  };
+
   const handleTerminalCommandEvent = ({
     command,
     isValid,
@@ -679,6 +710,15 @@ function App() {
   };
 
   const openFinderWindow = (path: string, title: string) => {
+    if (isMobile) {
+      openMobileScreen({
+        title,
+        appType: 'finder',
+        data: { path },
+      });
+      return;
+    }
+
     openWindow({
       id: `finder-${path}`,
       title,
@@ -716,6 +756,41 @@ function App() {
       unlockAchievement('first-spotlight');
       recordPlayfulMode('spotlight');
       setIsSpotlightOpen(true);
+      return;
+    }
+
+    if (isMobile) {
+      setIsSpotlightOpen(false);
+
+      const mobileConfigs: Record<string, RenderTarget> = {
+        finder: { title: 'Finder', appType: 'finder', data: { path: 'root' } },
+        terminal: { title: 'Terminal', appType: 'terminal' },
+        email: { title: 'Mail', appType: 'email' },
+        minesweeper: { title: 'Minesweeper', appType: 'minesweeper' },
+        'pdf-viewer': { title: 'cv.pdf', appType: 'pdf-viewer' },
+        'system-preferences': { title: 'System Preferences', appType: 'system-preferences' },
+        achievements: { title: 'Achievements', appType: 'achievements' },
+      };
+
+      const config = mobileConfigs[appType];
+      if (!config) return;
+
+      openMobileScreen(config);
+
+      if (appType === 'email') {
+        unlockAchievement('reference-check');
+        recordExploration('email');
+      }
+
+      if (appType === 'pdf-viewer') {
+        unlockAchievement('actually-read-it');
+        recordExploration('cv');
+      }
+
+      if (appType === 'achievements') {
+        setHasUnreadAchievement(false);
+      }
+
       return;
     }
 
@@ -863,6 +938,24 @@ function App() {
     }
 
     const windowId = `file-${file.id}`;
+    if (isMobile) {
+      if (file.fileType === 'img') {
+        openMobileScreen({
+          title: file.name,
+          appType: 'image-viewer',
+          data: { src: file.filePath },
+        });
+        return;
+      }
+
+      openMobileScreen({
+        title: file.name,
+        appType: 'text-viewer',
+        data: { content: file.fileContent, fileType: file.fileType },
+      });
+      return;
+    }
+
     const existingWindow = windows.find((window) => window.id === windowId);
 
     if (existingWindow) {
@@ -897,12 +990,13 @@ function App() {
     });
   };
 
-  const renderWindowContent = (window: (typeof windows)[number]) => {
-    switch (window.appType) {
+  const renderAppContent = ({ appType, title, data }: RenderTarget) => {
+    switch (appType) {
       case 'finder':
         return (
           <Finder
-            initialPath={window.data?.path || 'root'}
+            key={`finder-${String(data?.path || 'root')}`}
+            initialPath={String(data?.path || 'root')}
             onFileOpen={handleFileOpen}
             onFolderOpen={handleFolderOpen}
           />
@@ -910,9 +1004,9 @@ function App() {
       case 'terminal':
         return <Terminal onCommand={handleTerminalCommand} onCommandEvent={handleTerminalCommandEvent} />;
       case 'text-viewer':
-        return <TextViewer content={window.data?.content || ''} fileType={window.data?.fileType} />;
+        return <TextViewer content={String(data?.content || '')} fileType={data?.fileType as 'txt' | 'md' | undefined} />;
       case 'image-viewer':
-        return <ImageViewer src={window.data?.src || ''} alt={window.title} />;
+        return <ImageViewer src={String(data?.src || '')} alt={title} />;
       case 'pdf-viewer':
         return <PDFViewer />;
       case 'email':
@@ -954,6 +1048,180 @@ function App() {
   };
 
   const runningApps = Array.from(new Set(windows.map((window) => window.appType)));
+  const mobileHomeItems = [
+    { id: 'about', label: 'About Me', icon: '/icons/about-me.png', action: () => openFinderWindow('about', 'About Me') },
+    { id: 'projects', label: 'Projects', icon: '/icons/folder.png', action: () => openFinderWindow('projects', 'Projects') },
+    { id: 'experience', label: 'Experience', icon: '/icons/folder.png', action: () => openFinderWindow('experience', 'Experience') },
+    { id: 'cv', label: 'CV', icon: '/icons/document.png', action: () => handleAppClick('pdf-viewer') },
+    { id: 'mail', label: 'Mail', icon: '/icons/mail.png', action: () => handleAppClick('email') },
+    { id: 'terminal', label: 'Terminal', icon: '/icons/terminal.png', action: () => handleAppClick('terminal') },
+    { id: 'settings', label: 'Settings', icon: '/icons/settings.png', action: () => handleAppClick('system-preferences') },
+    { id: 'achievements', label: 'Awards', icon: '/icons/achievements.png', action: openAchievementsWindow },
+  ];
+  const mobileDockItems = [
+    { id: 'finder', label: 'Finder', icon: '/icons/finder.png', action: () => handleAppClick('finder') },
+    { id: 'spotlight', label: 'Search', icon: '/icons/spotlight.png', action: () => handleAppClick('spotlight') },
+    { id: 'mail', label: 'Mail', icon: '/icons/mail.png', action: () => handleAppClick('email') },
+    { id: 'terminal', label: 'Terminal', icon: '/icons/terminal.png', action: () => handleAppClick('terminal') },
+  ];
+
+  if (isMobile) {
+    return (
+      <div className="min-h-screen w-full overflow-hidden" style={appThemeStyle}>
+        <div className="fixed inset-0" style={selectedWallpaper.style} />
+        <div className="fixed inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.16),_transparent_34%)]" />
+        <div className="fixed inset-0 bg-black/18" />
+
+        <div className="relative z-10 flex min-h-screen flex-col px-4 pb-5 pt-4 text-white">
+          <div className="flex items-center justify-between px-1 text-sm font-medium">
+            <div>
+              {new Date().toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: false,
+              })}
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                unlockAchievement('first-spotlight');
+                recordPlayfulMode('spotlight');
+                setIsSpotlightOpen(true);
+              }}
+              className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] backdrop-blur-md"
+            >
+              Search
+            </button>
+          </div>
+
+          {mobileScreen ? (
+            <div className="mt-4 flex-1 overflow-hidden rounded-[34px] border border-white/12 bg-[var(--color-window-bg)] shadow-[0_24px_60px_rgba(0,0,0,0.32)] backdrop-blur-2xl">
+              <div className="flex items-center justify-between border-b border-[var(--color-window-header-border)] bg-[var(--color-window-header)] px-4 py-3 text-[var(--color-window-title)]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    openMobileScreen(null);
+                    setCurrentApp('Home');
+                  }}
+                  className="rounded-full bg-[var(--color-accent-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em]"
+                >
+                  Home
+                </button>
+                <div className="text-sm font-semibold">{mobileScreen.title}</div>
+                <button
+                  type="button"
+                  onClick={() => setIsSpotlightOpen(true)}
+                  className="rounded-full bg-[var(--color-accent-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em]"
+                >
+                  Search
+                </button>
+              </div>
+              <div className="h-[calc(100vh-12rem)] overflow-auto">
+                {renderAppContent(mobileScreen)}
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="px-1 pt-8">
+                <div className="text-4xl font-semibold tracking-tight">Gaurav</div>
+                <div className="mt-2 max-w-xs text-sm text-white/75">
+                  iPhone mode for the portfolio. Open apps, browse folders, and jump into projects without the desktop windowing.
+                </div>
+              </div>
+
+              <div className="mt-8 grid grid-cols-4 gap-x-3 gap-y-6 px-1">
+                {mobileHomeItems.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={item.action}
+                    className="flex flex-col items-center gap-2"
+                  >
+                    <img
+                      src={item.icon}
+                      alt=""
+                      draggable={false}
+                      className="h-16 w-16 rounded-[18px] object-contain shadow-[0_12px_24px_rgba(0,0,0,0.28)]"
+                    />
+                    <span className="text-center text-[11px] font-medium text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.4)]">
+                      {item.label}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+
+          <div className="mt-auto pt-5">
+            <div className="rounded-[28px] border border-white/12 bg-white/12 px-3 py-3 backdrop-blur-2xl shadow-[0_18px_40px_rgba(0,0,0,0.24)]">
+              <div className="flex items-end justify-around gap-2">
+                {mobileDockItems.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={item.action}
+                    className="flex flex-col items-center gap-1"
+                  >
+                    <img
+                      src={item.icon}
+                      alt=""
+                      draggable={false}
+                      className="h-14 w-14 object-contain"
+                    />
+                    <span className="text-[10px] font-medium text-white/80">{item.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <Spotlight
+          isOpen={isSpotlightOpen}
+          results={spotlightEntries}
+          onClose={() => setIsSpotlightOpen(false)}
+          onSelect={handleSpotlightSelect}
+        />
+
+        {achievementNotification && (
+          <button
+            type="button"
+            onClick={() => {
+              setAchievementNotification(null);
+              openAchievementsWindow();
+            }}
+            className="fixed right-4 top-14 z-[10002] w-[calc(100vw-2rem)] max-w-sm rounded-2xl border p-4 text-left shadow-2xl backdrop-blur-xl transition-opacity bg-[var(--color-window-bg)] border-[var(--color-window-border)] text-[var(--color-text)]"
+          >
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 rounded-xl bg-amber-300/15 p-2 text-amber-300">
+                <Trophy className="h-4 w-4" />
+              </div>
+              <div>
+                <div className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--color-text-subtle)]">Achievement unlocked</div>
+                <div className="mt-1 text-sm font-semibold text-[var(--color-text)]">{achievementNotification.name}</div>
+              </div>
+            </div>
+          </button>
+        )}
+
+        {isScreensaverActive && (
+          <div className="fixed inset-0 z-[10001] flex items-center justify-center" style={selectedWallpaper.style}>
+            <div className="absolute inset-0 bg-black/45 backdrop-blur-md" />
+            <div className="relative text-center text-white">
+              <div className="text-xs uppercase tracking-[0.45em] text-white/70">Screensaver</div>
+              <div className="mt-3 text-5xl font-semibold tracking-tight">
+                {new Date().toLocaleTimeString('en-US', {
+                  hour: 'numeric',
+                  minute: '2-digit',
+                  hour12: true,
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen w-screen overflow-hidden" style={appThemeStyle}>
@@ -1007,7 +1275,7 @@ function App() {
             }}
             onMaximize={() => toggleMaximize(window.id)}
           >
-            {renderWindowContent(window)}
+            {renderAppContent(window)}
           </Window>
         ) : null
       )}
