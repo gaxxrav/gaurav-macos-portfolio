@@ -1,4 +1,4 @@
-import { DesktopIcon, FileSystemItem } from '../types';
+import { FileSystemItem } from '../types';
 
 export const portfolioContent = {
   about: `Hello! I'm a creative developer who loves building delightful digital experiences.
@@ -136,8 +136,6 @@ Key Achievements:
 
   easterEggs: [
     'konami',
-    'matrix',
-    'disco',
     'glitch',
     'secret'
   ]
@@ -238,11 +236,40 @@ This is where I tinker with new ideas and technologies.
 
 Try these commands in the terminal:
 • minesweeper - Classic game reimagined
-• matrix - Follow the white rabbit
-• disco - Light show mode
 • konami - Classic cheat code (↑↑↓↓←→←→BA)
 
 Or just explore the interface - there are surprises everywhere!`
+      }
+    ]
+  },
+  trash: {
+    id: 'trash',
+    name: 'Trash',
+    type: 'folder',
+    icon: '🗑️',
+    content: [
+      {
+        id: 'draft-manifesto',
+        name: 'draft-manifesto.txt',
+        type: 'file',
+        icon: '📄',
+        fileType: 'txt',
+        fileContent: `Half-finished notes on interfaces that should feel like places, not pages.
+
+Not ready yet. Maybe never.`
+      },
+      {
+        id: 'old-moodboard',
+        name: 'old-moodboard.md',
+        type: 'file',
+        icon: '📝',
+        fileType: 'md',
+        fileContent: `# Old Moodboard
+
+- too polished
+- not enough personality
+- more texture, less template
+- keep the weird parts that still feel useful`
       }
     ]
   }

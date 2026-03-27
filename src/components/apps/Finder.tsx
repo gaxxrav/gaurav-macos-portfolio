@@ -1,17 +1,37 @@
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, Folder, FileText, Image, FileCode } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { FileSystemItem } from '../../types';
 import { fileSystem } from '../../data/portfolio';
 
 interface FinderProps {
   initialPath?: string;
   onFileOpen?: (file: FileSystemItem) => void;
+  onFolderOpen?: (folder: FileSystemItem) => void;
 }
 
-export const Finder = ({ initialPath = 'root', onFileOpen }: FinderProps) => {
+export const Finder = ({ initialPath = 'root', onFileOpen, onFolderOpen }: FinderProps) => {
   const [currentPath, setCurrentPath] = useState<string[]>([initialPath]);
   const [history, setHistory] = useState<string[][]>([[initialPath]]);
   const [historyIndex, setHistoryIndex] = useState(0);
+
+  const getAssetIcon = (item: FileSystemItem) => {
+    const rootIconMap: Record<string, string> = {
+      about: '/icons/folder.png',
+      experience: '/icons/folder.png',
+      projects: '/icons/folder.png',
+      playground: '/icons/folder.png',
+      trash: '/icons/bin.png',
+    };
+
+    if (item.type === 'folder') {
+      return rootIconMap[item.id] || '/icons/folder.png';
+    }
+
+    if (item.fileType === 'img') return '/icons/document.png';
+    if (item.fileType === 'md') return '/icons/document.png';
+    if (item.fileType === 'pdf') return '/icons/document.png';
+    return '/icons/document.png';
+  };
 
   const getCurrentItems = (): FileSystemItem[] => {
     if (currentPath[0] === 'root') {
@@ -28,6 +48,7 @@ export const Finder = ({ initialPath = 'root', onFileOpen }: FinderProps) => {
 
   const navigateToFolder = (item: FileSystemItem) => {
     if (item.type === 'folder') {
+      onFolderOpen?.(item);
       const newPath = [...currentPath, item.id];
       setCurrentPath(newPath);
       const newHistory = history.slice(0, historyIndex + 1);
@@ -79,28 +100,14 @@ export const Finder = ({ initialPath = 'root', onFileOpen }: FinderProps) => {
     return crumbs;
   };
 
-  const getFileIcon = (item: FileSystemItem) => {
-    if (item.type === 'folder') {
-      return <Folder className="w-10 h-10 text-blue-500" />;
-    }
-    switch (item.fileType) {
-      case 'img':
-        return <Image className="w-10 h-10 text-green-500" />;
-      case 'md':
-        return <FileCode className="w-10 h-10 text-purple-500" />;
-      default:
-        return <FileText className="w-10 h-10 text-gray-500" />;
-    }
-  };
-
   const items = getCurrentItems();
   const breadcrumbs = getBreadcrumbs();
 
   return (
     <div className="h-full flex">
-      <div className="w-48 bg-gray-100/50 border-r border-gray-200 p-3">
+      <div className="w-48 border-r p-3 bg-[var(--color-panel-soft)] border-[var(--color-border)] text-[var(--color-text)]">
         <div className="space-y-1">
-          <div className="text-xs font-semibold text-gray-500 mb-2 px-2">FAVORITES</div>
+          <div className="mb-2 px-2 text-xs font-semibold text-[var(--color-text-subtle)]">FAVORITES</div>
           {Object.values(fileSystem).map(item => (
             <button
               key={item.id}
@@ -111,35 +118,40 @@ export const Finder = ({ initialPath = 'root', onFileOpen }: FinderProps) => {
                 setHistory(newHistory);
                 setHistoryIndex(newHistory.length - 1);
               }}
-              className="w-full text-left px-2 py-1.5 rounded hover:bg-gray-200/70 transition-colors text-sm flex items-center gap-2"
+              className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm transition-colors hover:bg-[var(--color-accent-soft)]"
             >
-              <span className="text-lg">{item.icon}</span>
+              <img
+                src={getAssetIcon(item)}
+                alt=""
+                draggable={false}
+                className="h-5 w-5 object-contain"
+              />
               <span className="truncate">{item.name}</span>
             </button>
           ))}
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col">
-        <div className="h-12 bg-gray-100/50 border-b border-gray-200 flex items-center px-3 gap-2">
+      <div className="flex-1 flex flex-col bg-[var(--color-panel-bg)] text-[var(--color-text)]">
+        <div className="flex h-12 items-center gap-2 border-b px-3 bg-[var(--color-panel-soft)] border-[var(--color-border)]">
           <button
             onClick={goBack}
             disabled={historyIndex <= 0}
-            className="p-1.5 rounded hover:bg-gray-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="rounded p-1.5 transition-colors hover:bg-[var(--color-accent-soft)] disabled:cursor-not-allowed disabled:opacity-30"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
           <button
             onClick={goForward}
             disabled={historyIndex >= history.length - 1}
-            className="p-1.5 rounded hover:bg-gray-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="rounded p-1.5 transition-colors hover:bg-[var(--color-accent-soft)] disabled:cursor-not-allowed disabled:opacity-30"
           >
             <ChevronRight className="w-5 h-5" />
           </button>
           <div className="flex-1 flex items-center gap-1 text-sm">
             {breadcrumbs.map((crumb, i) => (
               <div key={i} className="flex items-center gap-1">
-                {i > 0 && <span className="text-gray-400">/</span>}
+                {i > 0 && <span className="text-[var(--color-text-subtle)]">/</span>}
                 <button
                   onClick={() => {
                     if (i === 0) {
@@ -162,9 +174,14 @@ export const Finder = ({ initialPath = 'root', onFileOpen }: FinderProps) => {
             {currentPath.length > 1 && (
               <button
                 onClick={navigateUp}
-                className="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-gray-100 transition-colors group"
+                className="group flex flex-col items-center gap-2 rounded-lg p-3 transition-colors hover:bg-[var(--color-accent-soft)]"
               >
-                <Folder className="w-10 h-10 text-gray-400 group-hover:text-gray-600" />
+                <img
+                  src="/icons/folder.png"
+                  alt=""
+                  draggable={false}
+                  className="h-12 w-12 object-contain opacity-80 transition-opacity group-hover:opacity-100"
+                />
                 <span className="text-sm text-center">...</span>
               </button>
             )}
@@ -172,9 +189,14 @@ export const Finder = ({ initialPath = 'root', onFileOpen }: FinderProps) => {
               <button
                 key={item.id}
                 onDoubleClick={() => navigateToFolder(item)}
-                className="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-gray-100 transition-colors group"
+                className="group flex flex-col items-center gap-2 rounded-lg p-3 transition-colors hover:bg-[var(--color-accent-soft)]"
               >
-                {getFileIcon(item)}
+                <img
+                  src={getAssetIcon(item)}
+                  alt=""
+                  draggable={false}
+                  className="h-12 w-12 object-contain drop-shadow-[0_6px_14px_rgba(0,0,0,0.18)]"
+                />
                 <span className="text-sm text-center break-words max-w-full">{item.name}</span>
               </button>
             ))}

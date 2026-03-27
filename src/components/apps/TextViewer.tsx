@@ -28,12 +28,12 @@ export const TextViewer = ({ content, fileType = 'txt' }: TextViewerProps) => {
   };
 
   return (
-    <div className="h-full bg-white p-8 overflow-auto">
+    <div className="h-full overflow-auto bg-[var(--color-panel-bg)] p-8 text-[var(--color-text)]">
       <div className="max-w-3xl mx-auto">
         {isMarkdown ? (
-          <div className="prose prose-gray">{renderMarkdown(content)}</div>
+          <div className="max-w-none text-[var(--color-text)]">{renderMarkdown(content)}</div>
         ) : (
-          <pre className="whitespace-pre-wrap font-sans text-gray-800 leading-relaxed">
+          <pre className="whitespace-pre-wrap font-sans leading-relaxed text-[var(--color-text)]">
             {content}
           </pre>
         )}

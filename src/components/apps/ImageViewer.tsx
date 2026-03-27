@@ -5,7 +5,7 @@ interface ImageViewerProps {
 
 export const ImageViewer = ({ src, alt = 'Image' }: ImageViewerProps) => {
   return (
-    <div className="h-full bg-gray-50 flex items-center justify-center p-4">
+    <div className="flex h-full items-center justify-center p-4 bg-[var(--color-panel-bg)]">
       <img
         src={src}
         alt={alt}

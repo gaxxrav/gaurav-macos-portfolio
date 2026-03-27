@@ -65,19 +65,20 @@ PROJECTS
   };
 
   return (
-    <div className="h-full bg-gray-100 flex flex-col">
-      <div className="bg-gray-800 text-white p-3 flex items-center justify-between">
+    <div className="flex h-full flex-col bg-[var(--color-panel-soft)] text-[var(--color-text)]">
+      <div className="flex items-center justify-between p-3 bg-[var(--color-window-header)] text-[var(--color-window-title)]">
         <span className="text-sm font-medium">cv.pdf</span>
         <button
           onClick={handleDownload}
-          className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 rounded transition-colors text-sm"
+          className="flex items-center gap-2 rounded px-3 py-1.5 text-sm text-white transition-colors"
+          style={{ backgroundColor: 'var(--color-accent)' }}
         >
           <Download className="w-4 h-4" />
           Download
         </button>
       </div>
       <div className="flex-1 overflow-auto p-8">
-        <div className="max-w-4xl mx-auto bg-white shadow-lg p-12">
+        <div className="mx-auto max-w-4xl p-12 shadow-lg bg-[var(--color-panel-bg)] text-[var(--color-text)]">
           <pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed">
             {cvContent}
           </pre>

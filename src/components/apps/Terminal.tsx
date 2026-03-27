@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { portfolioContent } from '../../data/portfolio';
+import { fileSystem, portfolioContent } from '../../data/portfolio';
+import type { FileSystemItem } from '../../types';
 
 interface TerminalProps {
   onCommand?: (command: string, args: string[]) => void;
+  onCommandEvent?: (payload: { command: string; args: string[]; isValid: boolean }) => void;
 }
 
 interface TerminalLine {
@@ -10,7 +12,7 @@ interface TerminalLine {
   content: string;
 }
 
-export const Terminal = ({ onCommand }: TerminalProps) => {
+export const Terminal = ({ onCommand, onCommandEvent }: TerminalProps) => {
   const [lines, setLines] = useState<TerminalLine[]>([
     { type: 'output', content: 'Portfolio Terminal v1.0.0' },
     { type: 'output', content: 'Type "help" for available commands' },
@@ -32,6 +34,84 @@ export const Terminal = ({ onCommand }: TerminalProps) => {
     }
   }, [lines]);
 
+  const normalizePathSegment = (value: string) =>
+    value.toLowerCase().replace(/\.[^/.]+$/, '').replace(/[^a-z0-9]+/g, '');
+
+  const findFileByPath = (inputPath: string): FileSystemItem | null => {
+    const segments = inputPath
+      .split('/')
+      .map((segment) => segment.trim())
+      .filter(Boolean);
+
+    if (segments.length === 0) {
+      return null;
+    }
+
+    let currentItems = Object.values(fileSystem);
+    let currentItem: FileSystemItem | null = null;
+
+    for (const segment of segments) {
+      const normalizedSegment = normalizePathSegment(segment);
+      const nextItem =
+        currentItems.find((item) => normalizePathSegment(item.name) === normalizedSegment) ??
+        currentItems.find((item) => normalizePathSegment(item.id) === normalizedSegment);
+
+      if (!nextItem) {
+        return null;
+      }
+
+      currentItem = nextItem;
+      currentItems = nextItem.content ?? [];
+    }
+
+    return currentItem;
+  };
+
+  const findFileAnywhere = (inputName: string): FileSystemItem | null => {
+    const normalizedInput = normalizePathSegment(inputName);
+    const stack = Object.values(fileSystem);
+
+    while (stack.length > 0) {
+      const item = stack.pop();
+      if (!item) continue;
+
+      if (
+        normalizePathSegment(item.name) === normalizedInput ||
+        normalizePathSegment(item.id) === normalizedInput
+      ) {
+        return item;
+      }
+
+      if (item.content) {
+        stack.push(...item.content);
+      }
+    }
+
+    return null;
+  };
+
+  const readFile = (inputPath: string): string | string[] => {
+    const target = findFileByPath(inputPath) ?? findFileAnywhere(inputPath);
+
+    if (!target) {
+      return `File not found: ${inputPath}. Try: cat bio.txt or cat about/bio.txt`;
+    }
+
+    if (target.type !== 'file') {
+      return `${target.name} is a folder. Try a file inside it.`;
+    }
+
+    if (target.fileContent) {
+      return target.fileContent.split('\n');
+    }
+
+    if (target.filePath) {
+      return [`${target.name}`, '', `Binary/asset file: ${target.filePath}`];
+    }
+
+    return `Nothing to display for ${target.name}.`;
+  };
+
   const commands: Record<string, (args: string[]) => string | string[]> = {
     help: () => [
       'Available commands:',
@@ -47,8 +127,6 @@ export const Terminal = ({ onCommand }: TerminalProps) => {
       '  open <item>       - Open an item',
       '  whoami            - Who am I?',
       '  clear             - Clear terminal',
-      '  matrix            - Enter the matrix',
-      '  disco             - Party mode',
       '  konami            - Try the konami code (↑↑↓↓←→←→BA)',
       '',
       'Tip: Use ↑↓ arrows to navigate command history'
@@ -81,7 +159,7 @@ export const Terminal = ({ onCommand }: TerminalProps) => {
     },
     cat: (args) => {
       if (!args[0]) return 'Usage: cat <filename>';
-      return `File not found: ${args[0]}. Try: cat about.txt`;
+      return readFile(args.join(' '));
     },
     open: (args) => {
       if (!args[0]) return 'Usage: open <item>';
@@ -100,14 +178,6 @@ export const Terminal = ({ onCommand }: TerminalProps) => {
       if (onCommand) onCommand('minesweeper', []);
       return 'Launching minesweeper...';
     },
-    matrix: () => {
-      if (onCommand) onCommand('matrix', []);
-      return 'Following the white rabbit...';
-    },
-    disco: () => {
-      if (onCommand) onCommand('disco', []);
-      return 'Party mode activated! 🎉';
-    },
     echo: (args) => args.join(' '),
     date: () => new Date().toString(),
     pwd: () => '/Users/portfolio/Desktop'
@@ -118,9 +188,11 @@ export const Terminal = ({ onCommand }: TerminalProps) => {
     if (!trimmed) return;
 
     const [cmd, ...args] = trimmed.split(' ');
-    const command = commands[cmd.toLowerCase()];
+    const normalizedCommand = cmd.toLowerCase();
+    const command = commands[normalizedCommand];
 
     setLines(prev => [...prev, { type: 'command', content: `$ ${trimmed}` }]);
+    onCommandEvent?.({ command: normalizedCommand, args, isValid: Boolean(command) });
 
     if (command) {
       const output = command(args);
@@ -164,7 +236,12 @@ export const Terminal = ({ onCommand }: TerminalProps) => {
   return (
     <div
       ref={terminalRef}
-      className="h-full bg-black text-green-400 font-mono text-sm p-4 overflow-auto"
+      className="h-full overflow-auto p-4 text-sm font-mono"
+      style={{
+        backgroundColor: 'var(--color-panel-bg)',
+        color: 'var(--color-accent)',
+        fontFamily: 'var(--font-mono)',
+      }}
       onClick={() => inputRef.current?.focus()}
     >
       {lines.map((line, i) => (
@@ -175,21 +252,21 @@ export const Terminal = ({ onCommand }: TerminalProps) => {
               ? 'text-blue-400'
               : line.type === 'error'
               ? 'text-red-400'
-              : 'text-green-400'
+              : 'text-[var(--color-accent)]'
           }`}
         >
           {line.content}
         </div>
       ))}
       <div className="flex items-center">
-        <span className="text-blue-400 mr-2">$</span>
+        <span className="mr-2 text-[var(--color-accent)]">$</span>
         <input
           ref={inputRef}
           type="text"
           value={currentInput}
           onChange={(e) => setCurrentInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="flex-1 bg-transparent outline-none text-green-400 font-mono"
+          className="flex-1 bg-transparent outline-none text-[var(--color-text)] font-mono"
           spellCheck={false}
           autoComplete="off"
         />

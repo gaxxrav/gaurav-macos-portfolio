@@ -23,7 +23,7 @@ export interface FileSystemItem {
 export interface WindowState {
   id: string;
   title: string;
-  appType: 'finder' | 'terminal' | 'text-viewer' | 'image-viewer' | 'pdf-viewer' | 'email' | 'minesweeper';
+  appType: 'finder' | 'terminal' | 'text-viewer' | 'image-viewer' | 'pdf-viewer' | 'email' | 'minesweeper' | 'system-preferences' | 'achievements';
   position: { x: number; y: number };
   size: { width: number; height: number };
   zIndex: number;

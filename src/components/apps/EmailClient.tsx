@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, Star, Archive, Inbox } from 'lucide-react';
+import { Star, Archive, Inbox } from 'lucide-react';
 import { portfolioContent } from '../../data/portfolio';
 
 export const EmailClient = () => {
@@ -19,62 +19,62 @@ export const EmailClient = () => {
   };
 
   return (
-    <div className="h-full flex bg-gray-50">
-      <div className="w-56 bg-gray-100 border-r border-gray-200 p-3">
+    <div className="flex h-full bg-[var(--color-panel-bg)] text-[var(--color-text)]">
+      <div className="w-56 border-r p-3 bg-[var(--color-panel-soft)] border-[var(--color-border)]">
         <div className="space-y-1">
-          <button className="w-full text-left px-3 py-2 rounded-lg bg-blue-100 text-blue-700 font-medium flex items-center gap-2">
+          <button className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left font-medium bg-[var(--color-accent-soft)] text-[var(--color-accent)]">
             <Inbox className="w-4 h-4" />
             Testimonials
           </button>
-          <button className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-200 transition-colors flex items-center gap-2 text-gray-600">
+          <button className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors hover:bg-[var(--color-accent-soft)] text-[var(--color-text-muted)]">
             <Star className="w-4 h-4" />
             Starred
           </button>
-          <button className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-200 transition-colors flex items-center gap-2 text-gray-600">
+          <button className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors hover:bg-[var(--color-accent-soft)] text-[var(--color-text-muted)]">
             <Archive className="w-4 h-4" />
             Archive
           </button>
         </div>
       </div>
 
-      <div className="w-80 bg-white border-r border-gray-200 overflow-auto">
+      <div className="w-80 overflow-auto border-r bg-[var(--color-panel-bg)] border-[var(--color-border)]">
         {portfolioContent.testimonials.map(email => (
           <button
             key={email.id}
             onClick={() => setSelectedEmail(email)}
-            className={`w-full text-left p-4 border-b border-gray-200 hover:bg-gray-50 transition-colors ${
-              selectedEmail.id === email.id ? 'bg-blue-50' : ''
+            className={`w-full border-b p-4 text-left transition-colors border-[var(--color-border)] hover:bg-[var(--color-accent-soft)] ${
+              selectedEmail.id === email.id ? 'bg-[var(--color-accent-soft)]' : ''
             }`}
           >
             <div className="flex items-start justify-between mb-1">
               <span className="font-semibold text-sm">{email.from}</span>
-              <span className="text-xs text-gray-500">{formatDate(email.date)}</span>
+              <span className="text-xs text-[var(--color-text-subtle)]">{formatDate(email.date)}</span>
             </div>
-            <div className="text-sm text-gray-900 mb-1 font-medium truncate">
+            <div className="mb-1 truncate text-sm font-medium text-[var(--color-text)]">
               {email.subject}
             </div>
-            <div className="text-sm text-gray-600 line-clamp-2">
+            <div className="line-clamp-2 text-sm text-[var(--color-text-muted)]">
               {email.message}
             </div>
           </button>
         ))}
       </div>
 
-      <div className="flex-1 bg-white overflow-auto">
+      <div className="flex-1 overflow-auto bg-[var(--color-panel-bg)]">
         {selectedEmail && (
           <div className="p-8">
-            <div className="mb-6 pb-6 border-b border-gray-200">
+            <div className="mb-6 border-b pb-6 border-[var(--color-border)]">
               <h2 className="text-2xl font-semibold mb-4">{selectedEmail.subject}</h2>
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold text-lg">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full text-lg font-semibold text-white" style={{ background: 'linear-gradient(135deg, var(--color-accent), var(--color-window-title))' }}>
                   {selectedEmail.from.charAt(0)}
                 </div>
                 <div>
                   <div className="font-semibold">{selectedEmail.from}</div>
-                  <div className="text-sm text-gray-600">{selectedEmail.role}</div>
+                  <div className="text-sm text-[var(--color-text-muted)]">{selectedEmail.role}</div>
                 </div>
               </div>
-              <div className="text-sm text-gray-500 mt-3">
+              <div className="mt-3 text-sm text-[var(--color-text-subtle)]">
                 {selectedEmail.date.toLocaleDateString('en-US', {
                   weekday: 'long',
                   year: 'numeric',
@@ -85,8 +85,8 @@ export const EmailClient = () => {
                 })}
               </div>
             </div>
-            <div className="prose prose-gray max-w-none">
-              <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
+            <div className="max-w-none">
+              <p className="whitespace-pre-wrap leading-relaxed text-[var(--color-text)]">
                 {selectedEmail.message}
               </p>
             </div>

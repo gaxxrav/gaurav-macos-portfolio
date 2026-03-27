@@ -10,13 +10,19 @@ interface Cell {
 
 type Difficulty = 'easy' | 'medium' | 'hard';
 
+interface MinesweeperProps {
+  onGameStart?: () => void;
+  onGameLose?: () => void;
+  onGameWin?: () => void;
+}
+
 const DIFFICULTIES = {
   easy: { rows: 8, cols: 8, mines: 10 },
   medium: { rows: 12, cols: 12, mines: 25 },
   hard: { rows: 16, cols: 16, mines: 50 }
 };
 
-export const Minesweeper = () => {
+export const Minesweeper = ({ onGameStart, onGameLose, onGameWin }: MinesweeperProps) => {
   const [difficulty, setDifficulty] = useState<Difficulty>('easy');
   const [board, setBoard] = useState<Cell[][]>([]);
   const [gameState, setGameState] = useState<'playing' | 'won' | 'lost'>('playing');
@@ -93,6 +99,7 @@ export const Minesweeper = () => {
     setTime(0);
     setFlagsLeft(config.mines);
     setIsFirstClick(true);
+    onGameStart?.();
   };
 
   const revealCell = (row: number, col: number) => {
@@ -112,6 +119,7 @@ export const Minesweeper = () => {
 
     if (cell.isMine) {
       setGameState('lost');
+      onGameLose?.();
       newBoard.forEach(row => row.forEach(c => {
         if (c.isMine) c.isRevealed = true;
       }));
@@ -150,6 +158,7 @@ export const Minesweeper = () => {
     const unrevealedNonMines = newBoard.flat().filter(c => !c.isRevealed && !c.isMine).length;
     if (unrevealedNonMines === 0) {
       setGameState('won');
+      onGameWin?.();
     }
   };
 
@@ -191,8 +200,8 @@ export const Minesweeper = () => {
   };
 
   return (
-    <div className="h-full bg-gray-100 p-6 overflow-auto flex flex-col items-center">
-      <div className="bg-white rounded-lg shadow-lg p-6 max-w-full">
+    <div className="flex h-full flex-col items-center overflow-auto p-6 bg-[var(--color-panel-soft)] text-[var(--color-text)]">
+      <div className="max-w-full rounded-lg p-6 shadow-lg bg-[var(--color-panel-bg)]">
         <div className="flex items-center justify-between mb-6">
           <div className="flex gap-2">
             {(['easy', 'medium', 'hard'] as Difficulty[]).map(d => (
@@ -201,9 +210,10 @@ export const Minesweeper = () => {
                 onClick={() => setDifficulty(d)}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   difficulty === d
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 hover:bg-gray-300'
+                    ? 'text-white'
+                    : 'bg-[var(--color-panel-soft)] hover:bg-[var(--color-accent-soft)]'
                 }`}
+                style={difficulty === d ? { backgroundColor: 'var(--color-accent)' } : undefined}
               >
                 {d.charAt(0).toUpperCase() + d.slice(1)}
               </button>
@@ -211,26 +221,26 @@ export const Minesweeper = () => {
           </div>
           <button
             onClick={resetGame}
-            className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition-colors"
+            className="rounded-lg p-2 transition-colors bg-[var(--color-panel-soft)] hover:bg-[var(--color-accent-soft)]"
           >
             <RotateCcw className="w-5 h-5" />
           </button>
         </div>
 
         <div className="flex items-center justify-between mb-4 text-sm font-medium">
-          <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded">
+          <div className="flex items-center gap-2 rounded px-3 py-2 bg-[var(--color-panel-soft)]">
             <Flag className="w-4 h-4" />
             <span>{flagsLeft}</span>
           </div>
-          <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded">
+          <div className="flex items-center gap-2 rounded px-3 py-2 bg-[var(--color-panel-soft)]">
             <Clock className="w-4 h-4" />
             <span>{String(Math.floor(time / 60)).padStart(2, '0')}:{String(time % 60).padStart(2, '0')}</span>
           </div>
         </div>
 
         {gameState !== 'playing' && (
-          <div className={`mb-4 p-4 rounded-lg text-center font-semibold ${
-            gameState === 'won' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+          <div className={`mb-4 rounded-lg p-4 text-center font-semibold ${
+            gameState === 'won' ? 'bg-emerald-500/15 text-emerald-300' : 'bg-red-500/15 text-red-300'
           }`}>
             {gameState === 'won' ? (
               <div className="flex items-center justify-center gap-2">
@@ -244,7 +254,7 @@ export const Minesweeper = () => {
         )}
 
         <div
-          className="inline-grid gap-0.5 bg-gray-300 p-0.5 rounded"
+          className="inline-grid gap-0.5 rounded bg-[var(--color-border)] p-0.5"
           style={{
             gridTemplateColumns: `repeat(${config.cols}, minmax(0, 1fr))`
           }}
@@ -258,9 +268,9 @@ export const Minesweeper = () => {
                 className={`w-8 h-8 flex items-center justify-center font-bold text-sm transition-colors ${
                   cell.isRevealed
                     ? cell.isMine
-                      ? 'bg-red-200'
-                      : 'bg-gray-100'
-                    : 'bg-gray-400 hover:bg-gray-500 active:bg-gray-600'
+                      ? 'bg-red-300/60'
+                      : 'bg-[var(--color-panel-bg)]'
+                    : 'bg-[var(--color-panel-soft)] hover:bg-[var(--color-accent-soft)] active:brightness-90'
                 } ${getCellColor(cell.neighborMines)}`}
               >
                 {getCellContent(cell)}
@@ -269,7 +279,7 @@ export const Minesweeper = () => {
           )}
         </div>
 
-        <div className="mt-4 text-xs text-gray-500 text-center">
+        <div className="mt-4 text-center text-xs text-[var(--color-text-muted)]">
           Left click to reveal • Right click to flag
         </div>
       </div>

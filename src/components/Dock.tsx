@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { Folder, Terminal, Mail, Gamepad2, FileText } from 'lucide-react';
 
 interface DockApp {
   id: string;
   name: string;
-  icon: JSX.Element;
+  icon: string;
   appType: string;
 }
 
@@ -14,11 +13,12 @@ interface DockProps {
 }
 
 const dockApps: DockApp[] = [
-  { id: 'finder', name: 'Finder', icon: <Folder className="w-6 h-6" />, appType: 'finder' },
-  { id: 'terminal', name: 'Terminal', icon: <Terminal className="w-6 h-6" />, appType: 'terminal' },
-  { id: 'mail', name: 'Mail', icon: <Mail className="w-6 h-6" />, appType: 'email' },
-  { id: 'minesweeper', name: 'Minesweeper', icon: <Gamepad2 className="w-6 h-6" />, appType: 'minesweeper' },
-  { id: 'cv', name: 'CV', icon: <FileText className="w-6 h-6" />, appType: 'pdf-viewer' }
+  { id: 'spotlight', name: 'Spotlight - Search', icon: '/icons/spotlight.png', appType: 'spotlight' },
+  { id: 'finder', name: 'Finder', icon: '/icons/finder.png', appType: 'finder' },
+  { id: 'terminal', name: 'Terminal', icon: '/icons/terminal.png', appType: 'terminal' },
+  { id: 'mail', name: 'Mail', icon: '/icons/mail.png', appType: 'email' },
+  { id: 'minesweeper', name: 'Minesweeper', icon: '/icons/minesweeper.png', appType: 'minesweeper' },
+  { id: 'cv', name: 'CV', icon: '/icons/document.png', appType: 'pdf-viewer' }
 ];
 
 export const Dock = ({ runningApps, onAppClick }: DockProps) => {
@@ -26,7 +26,14 @@ export const Dock = ({ runningApps, onAppClick }: DockProps) => {
 
   return (
     <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[9998]">
-      <div className="bg-gray-900/80 backdrop-blur-xl rounded-2xl px-3 py-2 shadow-2xl border border-gray-800/50">
+      <div
+        className="rounded-[22px] border px-3 py-2 shadow-2xl backdrop-blur-2xl"
+        style={{
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08))',
+          borderColor: 'rgba(255,255,255,0.16)',
+          boxShadow: '0 20px 50px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.18)',
+        }}
+      >
         <div className="flex items-end gap-1">
           {dockApps.map((app, index) => {
             const isHovered = hoveredApp === app.id;
@@ -43,18 +50,23 @@ export const Dock = ({ runningApps, onAppClick }: DockProps) => {
                   onMouseEnter={() => setHoveredApp(app.id)}
                   onMouseLeave={() => setHoveredApp(null)}
                   onClick={() => onAppClick(app.appType)}
-                  className="w-12 h-12 rounded-xl bg-gray-800/50 backdrop-blur-sm hover:bg-gray-700/50 flex items-center justify-center text-white transition-all duration-200 relative"
+                  className="relative flex h-12 w-12 items-center justify-center text-[var(--color-shell-text)] transition-all duration-200"
                   style={{
                     transform: `scale(${scale}) translateY(${isHovered ? '-8px' : '0'})`,
                   }}
                 >
-                  {app.icon}
+                  <img
+                    src={app.icon}
+                    alt=""
+                    draggable={false}
+                    className="h-12 w-12 object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.28)]"
+                  />
                   {isRunning && (
                     <div className="absolute -bottom-1 w-1 h-1 rounded-full bg-white" />
                   )}
                 </button>
                 {isHovered && (
-                  <div className="absolute -top-10 bg-gray-900/95 backdrop-blur-sm text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+                  <div className="absolute -top-10 whitespace-nowrap rounded px-2 py-1 text-xs backdrop-blur-sm bg-[var(--color-menu-bg)] text-[var(--color-shell-text)]">
                     {app.name}
                   </div>
                 )}
