@@ -152,7 +152,13 @@ export const Terminal = ({ onCommand, onCommandEvent }: TerminalProps) => {
       '  Mail.app',
       '  Trash/'
     ],
-    whoami: () => 'A creative developer who builds delightful experiences',
+    whoami: () => [
+      'Gaurav Murali',
+      'Backend-leaning full-stack developer focused on AI-powered applications and production APIs',
+      'GitHub: https://github.com/gaxxrav',
+      'LinkedIn: https://www.linkedin.com/in/gaurav-murali-9098bb258/',
+      'LeetCode: https://leetcode.com/u/gaxxrav/'
+    ],
     clear: () => {
       setLines([]);
       return '';

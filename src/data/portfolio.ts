@@ -1,136 +1,168 @@
 import { FileSystemItem } from '../types';
 
 export const portfolioContent = {
-  about: `Hello! I'm a creative developer who loves building delightful digital experiences.
+  about: `Gaurav Murali
+Bengaluru, Karnataka
+gaurav.murali3@gmail.com
++91 7026878784
+GitHub: https://github.com/gaxxrav
+LinkedIn: https://www.linkedin.com/in/gaurav-murali-9098bb258/
+LeetCode: https://leetcode.com/u/gaxxrav/
 
-I believe in the intersection of design and engineering, where thoughtful interfaces meet robust systems. This portfolio itself is a testament to that philosophy - a fully functional operating system simulator built to showcase work in an interactive way.
+Computer Science undergraduate focused on backend systems, AI-powered applications, and full-stack product development.
 
-When I'm not coding, you'll find me exploring new technologies, contributing to open source, or discovering hidden gems in video games.
+I build practical software with measurable outcomes, from real-time Indian Sign Language translation to production-grade CMS and API platforms. My work has included performance tuning, secure API design, computer vision, and AI-assisted product analysis.
 
-Key Skills:
-• Frontend Development (React, TypeScript, Modern CSS)
-• System Design & Architecture
-• UI/UX Design & Prototyping
-• Creative Problem Solving`,
+Core strengths:
+• Backend development with Django, Flask, REST APIs, JWT, and PostgreSQL
+• AI and computer vision workflows with Python, OpenCV, MediaPipe, and NLP
+• Full-stack product delivery with React, JavaScript, HTML/CSS, and Docker
+• Performance optimization, testing, documentation, and CI/CD`,
 
-  values: `# Core Values
+  values: `# Resume Snapshot
 
-## Craft Over Speed
-Quality takes time. Every detail matters, from animations to accessibility.
+## Education
+Bachelor of Engineering in Computer Science and Engineering
+BMS Institute of Technology, Bangalore
+CGPA: 8.7/10
 
-## Curiosity-Driven
-The best solutions come from asking "what if?" and exploring the unexpected.
+National Public School, Yelahanka
+Percentage: 96%
 
-## Human-Centered
-Technology should feel magical, not mechanical. Design for delight.
+## Certifications
+• CS50's Web Programming with Python and JavaScript
+• CS50's Introduction to Artificial Intelligence with Python
+• Machine Learning Specialization by DeepLearning.AI and Stanford University
 
-## Open & Collaborative
-Share knowledge freely. We all stand on the shoulders of giants.`,
+## Profiles
+• GitHub: https://github.com/gaxxrav
+• LinkedIn: https://www.linkedin.com/in/gaurav-murali-9098bb258/
+• LeetCode: https://leetcode.com/u/gaxxrav/
+
+## Skills
+• Languages: C++, Python, JavaScript, HTML, CSS, SQL
+• Backend and APIs: REST API design, server-side architecture, JWT, OAuth
+• Libraries and Tools: React, Node.js, Bootstrap, OpenCV, MediaPipe, Docker, Postman, Swagger, GitHub, Vercel
+• Frameworks and Platforms: Django, Wagtail, TensorFlow, Material UI, Godot
+• Databases: PostgreSQL, MongoDB, MySQL, SQLite
+• Other: DSA, SDLC, microservices fundamentals, SIT, UAT, technical documentation`,
 
   experiences: [
     {
       id: 'exp1',
-      company: 'Tech Innovations Inc',
-      role: 'Senior Frontend Engineer',
-      period: '2022 - Present',
-      description: `Led the redesign of the company's flagship product, resulting in a 40% increase in user engagement. Built a component library used across 5+ products.
+      company: 'Greenway Health',
+      role: 'Associate Software Developer Trainee',
+      period: '6 months',
+      description: `Worked on production software in a professional engineering environment, strengthening backend development, debugging, and delivery discipline.
 
-Key Achievements:
-• Architected scalable React application serving 100k+ daily users
-• Implemented advanced animation systems using Framer Motion
-• Mentored 3 junior developers in modern frontend practices
-• Reduced bundle size by 60% through strategic optimization`,
-      technologies: 'React, TypeScript, Node.js, GraphQL'
+Key Contributions:
+• Built experience with modular backend systems and day-to-day software delivery
+• Contributed to testing, issue resolution, and implementation support
+• Operated in a team workflow with code collaboration and structured engineering practices`,
+      technologies: 'Python, JavaScript, APIs, Testing, Debugging'
     },
     {
       id: 'exp2',
-      company: 'Creative Studio XYZ',
-      role: 'Full Stack Developer',
-      period: '2020 - 2022',
-      description: `Built interactive web experiences for major brands. Collaborated with designers to push the boundaries of what's possible on the web.
+      company: 'HappyFox',
+      role: 'Backend Developer Intern',
+      period: '2 months',
+      description: `Designed and implemented a production-grade University Widget integrated across HappyFox products.
 
-Key Achievements:
-• Developed award-winning interactive campaigns
-• Created custom WebGL experiences for product launches
-• Implemented real-time collaborative features
-• Established development best practices and workflows`,
-      technologies: 'React, Three.js, Node.js, MongoDB'
+Key Contributions:
+• Built a modular multi-tenant headless CMS with UUID-based product scoping
+• Improved API response times by 40% and reduced database queries by 60% through tuning, prefetching, pagination, and caching
+• Delivered secure APIs with authorization, rate limiting, and custom headers
+• Added role-based content delivery, search, content reuse, and video progress tracking
+• Supported CI/CD, containerization, migrations, and high automated test coverage
+• Helped define API design and documentation standards while working with a 3-developer team`,
+      technologies: 'React, Wagtail CMS, Django REST Framework, PostgreSQL, Redis, JWT, Docker, CI/CD'
     },
     {
       id: 'exp3',
-      company: 'Startup Labs',
-      role: 'Frontend Developer',
-      period: '2018 - 2020',
-      description: `Joined early-stage startup to build MVP from scratch. Wore multiple hats as part of a small, agile team.
+      company: 'Mphasis',
+      role: 'Full Stack Developer Intern',
+      period: '3 months',
+      description: `Built a meeting notes application with speech-to-text, authentication, and note management features.
 
-Key Achievements:
-• Built entire frontend architecture from ground up
-• Implemented responsive design system
-• Integrated payment processing and analytics
-• Contributed to product strategy and UX decisions`,
-      technologies: 'Vue.js, JavaScript, REST APIs, Firebase'
+Key Contributions:
+• Implemented speech-to-text workflow for meeting capture
+• Added user authentication, notes management, and notification features
+• Contributed to testing and debugging across unit, integration, and user testing flows`,
+      technologies: 'Full-stack development, Authentication, Speech-to-Text, Testing, Debugging'
+    },
+    {
+      id: 'exp4',
+      company: 'LSSgoBikes',
+      role: 'Backend Developer Intern',
+      period: '2 months',
+      description: `Worked on backend modules for a bike rental platform and used Mongo Cloud for application data handling.
+
+Key Contributions:
+• Developed backend functionality for rental workflows
+• Worked with cloud-hosted MongoDB data storage in a product setting`,
+      technologies: 'Backend Development, MongoDB Atlas, APIs'
     }
   ],
 
   projects: [
     {
       id: 'proj1',
-      name: 'Quantum Dashboard',
-      description: 'A real-time data visualization platform for IoT devices with custom 3D graphics engine.',
+      name: 'AI-Powered ISL Translation System',
+      description: 'Built a real-time Indian Sign Language translator with gesture training, context-aware predictions, and multilingual audio output in English and Hindi. Reduced average translation latency to 1.2 seconds and achieved 90% accuracy in controlled environments.',
       image: 'https://images.pexels.com/photos/577585/pexels-photo-577585.jpeg?auto=compress&cs=tinysrgb&w=800',
-      tech: 'React, Three.js, WebSocket, D3.js',
-      link: '#'
+      tech: 'Python, OpenCV, MediaPipe, NLP, Text-to-Speech',
+      link: 'Smart India Hackathon 2024 submission'
     },
     {
       id: 'proj2',
-      name: 'Collaborative Canvas',
-      description: 'Multi-user creative workspace with real-time collaboration and version control.',
+      name: 'AI Driven Food and Product Insights Platform',
+      description: 'Built a barcode-based analysis platform with webcam scanning, nutritional insights, and AI-generated ingredient and environmental analysis using Open Food Facts and Gemini. Reduced manual product lookup time by roughly 80%.',
       image: 'https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg?auto=compress&cs=tinysrgb&w=800',
-      tech: 'React, WebRTC, Canvas API, Node.js',
-      link: '#'
+      tech: 'Flask, OpenCV, Pyzbar, Gemini API, Open Food Facts API, JavaScript, HTML, CSS',
+      link: 'Vercel demo and GitHub repository'
     },
     {
       id: 'proj3',
-      name: 'Motion Library',
-      description: 'Open-source animation library for React with physics-based interactions.',
+      name: 'Pluggable University Widget for HappyFox',
+      description: 'Designed and scaled a multi-tenant widget platform with secure APIs, caching, search, recommendations, and video progress tracking. Improved API performance and supported multiple products from a shared content system.',
       image: 'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=800',
-      tech: 'TypeScript, React, GSAP, Framer Motion',
-      link: '#'
+      tech: 'React, Wagtail CMS, Django REST Framework, PostgreSQL, Redis, JWT, Docker',
+      link: 'Production internship project'
     },
     {
       id: 'proj4',
-      name: 'Neural Playground',
-      description: 'Interactive machine learning visualizations for educational purposes.',
+      name: 'Meeting Notes Application',
+      description: 'Built a full-stack application for note-taking with speech-to-text, authentication, notifications, and structured testing coverage during internship work at Mphasis.',
       image: 'https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=800',
-      tech: 'Python, TensorFlow.js, React, D3.js',
-      link: '#'
+      tech: 'Full-stack web development, Speech-to-Text, Authentication, Testing',
+      link: 'Internship project'
     }
   ],
 
   testimonials: [
     {
       id: 'test1',
-      from: 'Sarah Chen',
-      role: 'Product Manager @ Tech Innovations',
-      subject: 'Exceptional work on dashboard redesign',
-      message: `Working with them was an absolute pleasure. Their attention to detail and ability to balance aesthetics with functionality is remarkable. The new dashboard exceeded all our expectations and user feedback has been overwhelmingly positive.`,
-      date: new Date('2024-02-15')
+      from: 'Smart India Hackathon',
+      role: '2024 selection milestone',
+      subject: 'Shortlisted for the external hackathon round',
+      message: `The AI-Powered ISL Translation System was shortlisted for the external hackathon round at Smart India Hackathon 2024. The project focused on real-time sign recognition, multilingual audio output, and context-aware assistance for smoother communication.`,
+      date: new Date('2024-09-01')
     },
     {
       id: 'test2',
-      from: 'Marcus Rodriguez',
-      role: 'CTO @ Creative Studio XYZ',
-      subject: 'A true craftsperson',
-      message: `Rare to find someone who is both deeply technical and highly creative. They consistently delivered pixel-perfect implementations while also contributing valuable ideas to the product vision. A stellar team player.`,
-      date: new Date('2023-11-20')
+      from: 'IEEE Student Branch, BMSIT',
+      role: 'Campus achievement',
+      subject: 'Winner at the IEEE GitHub Workshop Contest',
+      message: `Won the IEEE GitHub Workshop Contest conducted through the IEEE Student Branch at BMSIT. The recognition reflects strong fundamentals in collaboration workflows, version control, and practical software development execution.`,
+      date: new Date('2024-03-20')
     },
     {
       id: 'test3',
-      from: 'Emily Thompson',
-      role: 'Design Lead @ Startup Labs',
-      subject: 'Bridge between design and engineering',
-      message: `The best developer-designer partnership I've ever experienced. They understood design intent intuitively and often improved upon it with technical insights. Their code is as clean as the interfaces they build.`,
-      date: new Date('2023-08-10')
+      from: 'ReapBenefit.org and BBMP',
+      role: 'Student Summer Internship',
+      subject: 'Built a smart waste management solution for Bengaluru',
+      message: `Worked on an engineering solution for waste management using Smart Bins in collaboration with ReapBenefit.org and BBMP. The internship emphasized practical problem-solving, civic impact, and applied product thinking.`,
+      date: new Date('2023-06-15')
     }
   ],
 
@@ -158,11 +190,26 @@ export const fileSystem: Record<string, FileSystemItem> = {
       },
       {
         id: 'values',
-        name: 'values.md',
+        name: 'resume.md',
         type: 'file',
         icon: '📝',
         fileType: 'md',
         fileContent: portfolioContent.values
+      },
+      {
+        id: 'links',
+        name: 'links.txt',
+        type: 'file',
+        icon: '🔗',
+        fileType: 'txt',
+        fileContent: `GitHub
+https://github.com/gaxxrav
+
+LinkedIn
+https://www.linkedin.com/in/gaurav-murali-9098bb258/
+
+LeetCode
+https://leetcode.com/u/gaxxrav/`
       }
     ]
   },
