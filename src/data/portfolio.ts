@@ -1,72 +1,96 @@
 import { FileSystemItem } from '../types';
 
 export const portfolioContent = {
-  about: `Gaurav Murali
-Bengaluru, Karnataka
-gaurav.murali3@gmail.com
-+91 7026878784
-GitHub: https://github.com/gaxxrav
-LinkedIn: https://www.linkedin.com/in/gaurav-murali-9098bb258/
-LeetCode: https://leetcode.com/u/gaxxrav/
+  about: `Hi! I'm Gaurav Murali.
 
-Computer Science undergraduate focused on backend systems, AI-powered applications, and full-stack product development.
+I love:
 
-I build practical software with measurable outcomes, from real-time Indian Sign Language translation to production-grade CMS and API platforms. My work has included performance tuning, secure API design, computer vision, and AI-assisted product analysis.
+1. Skateboarding
+2. Competitive Sports
+3. Learning about Human Behaviour
+4. Chess
+5. Cats
 
-Core strengths:
-• Backend development with Django, Flask, REST APIs, JWT, and PostgreSQL
-• AI and computer vision workflows with Python, OpenCV, MediaPipe, and NLP
-• Full-stack product delivery with React, JavaScript, HTML/CSS, and Docker
-• Performance optimization, testing, documentation, and CI/CD`,
+(not necessarily in that order haha)
 
-  values: `# Resume Snapshot
+I like to keep myself as active as I can and interact with people from different walks of life.
 
-## Education
-Bachelor of Engineering in Computer Science and Engineering
-BMS Institute of Technology, Bangalore
-CGPA: 8.7/10
+Nice to see you here!`,
 
-National Public School, Yelahanka
+  values: `Resume Snapshot
+Education
+Bachelor of Engineering in Computer Science (Infosci) and Engineering
+CGPA: 8.8/10 (absolute)
+
+National Public School
 Percentage: 96%
 
-## Certifications
-• CS50's Web Programming with Python and JavaScript
-• CS50's Introduction to Artificial Intelligence with Python
-• Machine Learning Specialization by DeepLearning.AI and Stanford University
+Certifications
+- CS50's Web Programming with Python and JavaScript
+- CS50's Introduction to Artificial Intelligence with Python
+- Machine Learning Specialization by DeepLearning.AI and Stanford University
 
-## Profiles
-• GitHub: https://github.com/gaxxrav
-• LinkedIn: https://www.linkedin.com/in/gaurav-murali-9098bb258/
-• LeetCode: https://leetcode.com/u/gaxxrav/
+Languages
+> C++, Python, JavaScript, C#, Go, SQL, HTML5, CSS, SASS
 
-## Skills
-• Languages: C++, Python, JavaScript, HTML, CSS, SQL
-• Backend and APIs: REST API design, server-side architecture, JWT, OAuth
-• Libraries and Tools: React, Node.js, Bootstrap, OpenCV, MediaPipe, Docker, Postman, Swagger, GitHub, Vercel
-• Frameworks and Platforms: Django, Wagtail, TensorFlow, Material UI, Godot
-• Databases: PostgreSQL, MongoDB, MySQL, SQLite
-• Other: DSA, SDLC, microservices fundamentals, SIT, UAT, technical documentation`,
+Backend & APIs
+> Django, Django REST Framework, ASP.NET, REST API Design
+> JWT, OAuth, Auth0
+> Microservices Fundamentals
+> Server-side Architecture
+> Redis, Twilio, Stripe, Mailtrap
+
+Frameworks & Platforms
+> React.js, React Native, Node.js
+> .NET, .NET MAUI
+> TensorFlow
+> Bootstrap
+
+Databases
+> PostgreSQL, MongoDB, MySQL, SQLite
+> ProgressDB / OpenEdge
+
+DevOps & Cloud
+> Docker, Jenkins
+> CI/CD
+> Git, GitHub
+> AWS, Microsoft Azure Machine Learning
+> Vercel
+> Postman, Swagger
+
+AI & Machine Learning
+> Agentic AI, Agent Ops, ADK
+> LLMOps
+> Model Context Protocol (MCP)
+
+Software Engineering & Methodologies
+> SDLC, SIT & UAT
+> Scrum`,
 
   experiences: [
     {
       id: 'exp1',
       company: 'Greenway Health',
-      role: 'Associate Software Developer Trainee',
+      role: 'Assoc. SDE Intern',
       period: '6 months',
       description: `Worked on production software in a professional engineering environment, strengthening backend development, debugging, and delivery discipline.
 
 Key Contributions:
-• Built experience with modular backend systems and day-to-day software delivery
-• Contributed to testing, issue resolution, and implementation support
-• Operated in a team workflow with code collaboration and structured engineering practices`,
-      technologies: 'Python, JavaScript, APIs, Testing, Debugging'
+• Built Data Visualisation Sparkline Charts for Patient Vitals
+• Database Writeback for missing endpoints via Domain Services and SNS/SQS
+• Figma Wireframes for Mobile View
+• Gerrit Code Reviews
+• Automation Testing`,
+      technologies: 'C#, .NET, .NET Maui, Jenkins, Gerrit, AWS Healthlake, FHIR'
     },
     {
       id: 'exp2',
       company: 'HappyFox',
       role: 'Backend Developer Intern',
-      period: '2 months',
-      description: `Designed and implemented a production-grade University Widget integrated across HappyFox products.
+      period: '3 months',
+      description: `My first internship in college.
+
+Designed and implemented a production-grade University Widget integrated across HappyFox products.
 
 Key Contributions:
 • Built a modular multi-tenant headless CMS with UUID-based product scoping
@@ -95,7 +119,9 @@ Key Contributions:
       company: 'LSSgoBikes',
       role: 'Backend Developer Intern',
       period: '2 months',
-      description: `Worked on backend modules for a bike rental platform and used Mongo Cloud for application data handling.
+      description: `A short term contract based internship with my Seniors in College for their start-up.
+
+Worked on backend modules for a bike rental platform and used Mongo Cloud for application data handling.
 
 Key Contributions:
 • Developed backend functionality for rental workflows
@@ -109,23 +135,20 @@ Key Contributions:
       id: 'proj1',
       name: 'AI-Powered ISL Translation System',
       description: 'Built a real-time Indian Sign Language translator with gesture training, context-aware predictions, and multilingual audio output in English and Hindi. Reduced average translation latency to 1.2 seconds and achieved 90% accuracy in controlled environments.',
-      image: 'https://images.pexels.com/photos/577585/pexels-photo-577585.jpeg?auto=compress&cs=tinysrgb&w=800',
       tech: 'Python, OpenCV, MediaPipe, NLP, Text-to-Speech',
-      link: 'Smart India Hackathon 2024 submission'
+      link: 'available on my github'
     },
     {
       id: 'proj2',
       name: 'AI Driven Food and Product Insights Platform',
       description: 'Built a barcode-based analysis platform with webcam scanning, nutritional insights, and AI-generated ingredient and environmental analysis using Open Food Facts and Gemini. Reduced manual product lookup time by roughly 80%.',
-      image: 'https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg?auto=compress&cs=tinysrgb&w=800',
       tech: 'Flask, OpenCV, Pyzbar, Gemini API, Open Food Facts API, JavaScript, HTML, CSS',
-      link: 'Vercel demo and GitHub repository'
+      link: 'available on my github'
     },
     {
       id: 'proj3',
       name: 'Pluggable University Widget for HappyFox',
       description: 'Designed and scaled a multi-tenant widget platform with secure APIs, caching, search, recommendations, and video progress tracking. Improved API performance and supported multiple products from a shared content system.',
-      image: 'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=800',
       tech: 'React, Wagtail CMS, Django REST Framework, PostgreSQL, Redis, JWT, Docker',
       link: 'Production internship project'
     },
@@ -133,7 +156,6 @@ Key Contributions:
       id: 'proj4',
       name: 'Meeting Notes Application',
       description: 'Built a full-stack application for note-taking with speech-to-text, authentication, notifications, and structured testing coverage during internship work at Mphasis.',
-      image: 'https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=800',
       tech: 'Full-stack web development, Speech-to-Text, Authentication, Testing',
       link: 'Internship project'
     }
@@ -246,14 +268,6 @@ https://leetcode.com/u/gaxxrav/`
       type: 'folder' as const,
       icon: '📂',
       content: [
-        {
-          id: `${proj.id}-preview`,
-          name: 'preview.png',
-          type: 'file' as const,
-          icon: '🖼️',
-          fileType: 'img' as const,
-          filePath: proj.image
-        },
         {
           id: `${proj.id}-readme`,
           name: 'README.md',
