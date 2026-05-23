@@ -7,7 +7,7 @@ export interface DesktopIcon {
   content?: FileSystemItem[];
   fileType?: 'txt' | 'md' | 'pdf' | 'img';
   filePath?: string;
-  appType?: 'chess-stats';
+  appType?: 'chess-stats' | 'monkeytype-stats';
 }
 
 export interface FileSystemItem {
@@ -19,19 +19,30 @@ export interface FileSystemItem {
   fileType?: 'txt' | 'md' | 'pdf' | 'img';
   fileContent?: string;
   filePath?: string;
-  appType?: 'chess-stats';
+  appType?: 'chess-stats' | 'monkeytype-stats';
 }
 
 export interface WindowState {
   id: string;
   title: string;
-  appType: 'finder' | 'terminal' | 'text-viewer' | 'image-viewer' | 'pdf-viewer' | 'email' | 'minesweeper' | 'system-preferences' | 'achievements' | 'chess-stats';
+  appType:
+    | 'finder'
+    | 'terminal'
+    | 'text-viewer'
+    | 'image-viewer'
+    | 'pdf-viewer'
+    | 'email'
+    | 'minesweeper'
+    | 'system-preferences'
+    | 'achievements'
+    | 'chess-stats'
+    | 'monkeytype-stats';
   position: { x: number; y: number };
   size: { width: number; height: number };
   zIndex: number;
   isMinimized: boolean;
   isMaximized: boolean;
-  data?: any;
+  data?: unknown;
 }
 
 export interface DockApp {

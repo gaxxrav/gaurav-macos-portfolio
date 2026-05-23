@@ -287,19 +287,11 @@ https://leetcode.com/u/gaxxrav/`
     content: [
       {
         id: 'experiments',
-        name: 'experiments.txt',
+        name: 'what is this.txt',
         type: 'file',
         icon: '📄',
         fileType: 'txt',
-        fileContent: `# Experimental Zone
-
-This is where I tinker with new ideas and technologies.
-
-Try these commands in the terminal:
-• minesweeper - Classic game reimagined
-• konami - Classic cheat code (↑↑↓↓←→←→BA)
-
-Or just explore the interface - there are surprises everywhere!`
+        fileContent: `Here you can see my stats across various platforms`
       },
       {
         id: 'chess-stats',
@@ -311,6 +303,17 @@ Or just explore the interface - there are surprises everywhere!`
         fileContent: `Live Chess.com dashboard for mikal_jakson.
 
 Open this file to view current ratings, records, puzzles, and account status pulled from the backend.`
+      },
+      {
+        id: 'monkeytype-stats',
+        name: 'monkeytype.live',
+        type: 'file',
+        icon: '⌨️',
+        fileType: 'txt',
+        appType: 'monkeytype-stats',
+        fileContent: `Live Monkeytype dashboard.
+
+Open this file to load a public Monkeytype profile and view live typing stats, streaks, activity, and personal bests.`
       }
     ]
   },
@@ -326,9 +329,7 @@ Open this file to view current ratings, records, puzzles, and account status pul
         type: 'file',
         icon: '📄',
         fileType: 'txt',
-        fileContent: `Half-finished notes on interfaces that should feel like places, not pages.
-
-Not ready yet. Maybe never.`
+        fileContent: `Not ready yet. Maybe never.`
       },
       {
         id: 'old-moodboard',

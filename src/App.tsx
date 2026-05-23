@@ -14,6 +14,7 @@ import { Minesweeper } from './components/apps/Minesweeper';
 import { SystemPreferences } from './components/apps/SystemPreferences';
 import { Achievements } from './components/apps/Achievements';
 import { ChessStats } from './components/apps/ChessStats';
+import { MonkeytypeStats } from './components/apps/MonkeytypeStats';
 import { Spotlight, type SpotlightResult } from './components/apps/Spotlight';
 import { useWindowManager } from './hooks/useWindowManager';
 import { FileSystemItem } from './types';
@@ -72,7 +73,7 @@ type SearchEntry = SpotlightResult & {
 type RenderTarget = {
   appType: string;
   title: string;
-  data?: Record<string, unknown>;
+  data?: unknown;
 };
 
 type MobileScreenState = RenderTarget | null;
@@ -1004,26 +1005,30 @@ function App() {
 
     const windowId = `file-${file.id}`;
 
-    if (file.appType === 'chess-stats') {
+    if (file.appType === 'chess-stats' || file.appType === 'monkeytype-stats') {
       if (isMobile) {
         openMobileScreen({
           title: file.name,
-          appType: 'chess-stats',
+          appType: file.appType,
         });
         return;
       }
 
       const existingWindow = windows.find((window) => window.id === windowId);
       if (existingWindow) {
-        focusWindow(windowId);
-        setCurrentApp(existingWindow.title);
-        return;
+        if (existingWindow.appType !== file.appType) {
+          closeWindow(windowId);
+        } else {
+          focusWindow(windowId);
+          setCurrentApp(existingWindow.title);
+          return;
+        }
       }
 
       openWindow({
         id: windowId,
         title: file.name,
-        appType: 'chess-stats',
+        appType: file.appType,
         position: { x: 220, y: 130 },
         size: { width: 860, height: 620 },
         isMinimized: false,
@@ -1086,12 +1091,14 @@ function App() {
   };
 
   const renderAppContent = ({ appType, title, data }: RenderTarget) => {
+    const payload = (data && typeof data === 'object' ? data : {}) as Record<string, unknown>;
+
     switch (appType) {
       case 'finder':
         return (
           <Finder
-            key={`finder-${String(data?.path || 'root')}`}
-            initialPath={String(data?.path || 'root')}
+            key={`finder-${String(payload.path || 'root')}`}
+            initialPath={String(payload.path || 'root')}
             onFileOpen={handleFileOpen}
             onFolderOpen={handleFolderOpen}
           />
@@ -1099,9 +1106,9 @@ function App() {
       case 'terminal':
         return <Terminal onCommand={handleTerminalCommand} onCommandEvent={handleTerminalCommandEvent} />;
       case 'text-viewer':
-        return <TextViewer content={String(data?.content || '')} fileType={data?.fileType as 'txt' | 'md' | undefined} />;
+        return <TextViewer content={String(payload.content || '')} fileType={payload.fileType as 'txt' | 'md' | undefined} />;
       case 'image-viewer':
-        return <ImageViewer src={String(data?.src || '')} alt={title} />;
+        return <ImageViewer src={String(payload.src || '')} alt={title} />;
       case 'pdf-viewer':
         return <PDFViewer />;
       case 'email':
@@ -1139,6 +1146,8 @@ function App() {
         return <Achievements achievements={achievementDefinitions} unlockedIds={achievementsSet} />;
       case 'chess-stats':
         return <ChessStats />;
+      case 'monkeytype-stats':
+        return <MonkeytypeStats />;
       default:
         return <div>Unknown app type</div>;
     }

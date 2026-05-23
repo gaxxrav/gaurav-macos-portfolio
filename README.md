@@ -1,8 +1,8 @@
 # Gaurav MacOS Portfolio
 
-## Chess Stats Backend
+## Live Stats Backend
 
-The live Chess.com stats panel in `Playground/chess-stats.live` is powered by a small FastAPI service in `backend/`.
+The live Chess.com and Monkeytype panels in `Playground/chess-stats.live` and `Playground/monkeytype.live` are powered by a small FastAPI service in `backend/`.
 
 ### Run locally
 
@@ -12,4 +12,4 @@ npm run dev:backend
 npm run dev
 ```
 
-The frontend calls `/api/chess/stats/mikal_jakson` through the Vite proxy, which forwards requests to `http://127.0.0.1:8000`.
+The frontend calls `/api/chess/stats/:username` and `/api/monkeytype/profile/:username` through the Vite proxy, which forwards requests to `http://127.0.0.1:8000`.
