@@ -286,6 +286,17 @@ Try these commands in the terminal:
 • konami - Classic cheat code (↑↑↓↓←→←→BA)
 
 Or just explore the interface - there are surprises everywhere!`
+      },
+      {
+        id: 'chess-stats',
+        name: 'chess-stats.live',
+        type: 'file',
+        icon: '♟️',
+        fileType: 'txt',
+        appType: 'chess-stats',
+        fileContent: `Live Chess.com dashboard for mikal_jakson.
+
+Open this file to view current ratings, records, puzzles, and account status pulled from the backend.`
       }
     ]
   },

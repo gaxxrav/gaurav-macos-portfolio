@@ -13,6 +13,7 @@ import { EmailClient } from './components/apps/EmailClient';
 import { Minesweeper } from './components/apps/Minesweeper';
 import { SystemPreferences } from './components/apps/SystemPreferences';
 import { Achievements } from './components/apps/Achievements';
+import { ChessStats } from './components/apps/ChessStats';
 import { Spotlight, type SpotlightResult } from './components/apps/Spotlight';
 import { useWindowManager } from './hooks/useWindowManager';
 import { FileSystemItem } from './types';
@@ -75,6 +76,9 @@ type RenderTarget = {
 };
 
 type MobileScreenState = RenderTarget | null;
+
+const BOOT_SCREEN_DURATION_MS = 2400;
+const BOOT_SCREEN_FADE_MS = 420;
 
 const wallpaperOptions: WallpaperOption[] = [
   {
@@ -377,6 +381,33 @@ const trashFileIds = new Set(
     .map((item) => item.id)
 );
 
+function BootScreen({ isVisible, isFading }: { isVisible: boolean; isFading: boolean }) {
+  if (!isVisible) {
+    return null;
+  }
+
+  return (
+    <div
+      className={`boot-screen ${isFading ? 'boot-screen--fade' : ''}`}
+      aria-hidden={!isVisible}
+    >
+      <div className="boot-screen__glow" />
+      <div className="boot-screen__content">
+        <img
+          src="/icons/pixelated-pfp.png"
+          alt="Pixel portrait"
+          className="boot-screen__portrait"
+          draggable={false}
+        />
+        <div className="boot-screen__loader" aria-hidden="true">
+          <span className="boot-screen__loader-fill" />
+        </div>
+        <div className="boot-screen__fallback">Welcome</div>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const {
     windows,
@@ -393,7 +424,7 @@ function App() {
   const [easterEgg, setEasterEgg] = useState<EasterEgg>('none');
   const [konamiCode, setKonamiCode] = useState<string[]>([]);
   const [selectedWallpaperId, setSelectedWallpaperId] = useState('black-sweater');
-  const [selectedThemeId, setSelectedThemeId] = useState('graphite');
+  const [selectedThemeId, setSelectedThemeId] = useState('terminal-green');
   const [screensaverEnabled, setScreensaverEnabled] = useState(true);
   const [screensaverDelayMs, setScreensaverDelayMs] = useState(60000);
   const [isScreensaverActive, setIsScreensaverActive] = useState(false);
@@ -403,6 +434,8 @@ function App() {
   const [achievementNotification, setAchievementNotification] = useState<AchievementNotification | null>(null);
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
   const [mobileScreen, setMobileScreen] = useState<MobileScreenState>(null);
+  const [isBootVisible, setIsBootVisible] = useState(true);
+  const [isBootFading, setIsBootFading] = useState(false);
 
   const inactivityTimeoutRef = useRef<number | null>(null);
   const notificationTimeoutRef = useRef<number | null>(null);
@@ -588,6 +621,22 @@ function App() {
 
   useEffect(() => {
     unlockAchievement('first-boot');
+  }, []);
+
+  useEffect(() => {
+    const fadeTimer = window.setTimeout(() => {
+      setIsBootFading(true);
+    }, BOOT_SCREEN_DURATION_MS - BOOT_SCREEN_FADE_MS);
+
+    const hideTimer = window.setTimeout(() => {
+      setIsBootVisible(false);
+      setIsBootFading(false);
+    }, BOOT_SCREEN_DURATION_MS);
+
+    return () => {
+      window.clearTimeout(fadeTimer);
+      window.clearTimeout(hideTimer);
+    };
   }, []);
 
   useEffect(() => {
@@ -938,6 +987,36 @@ function App() {
     }
 
     const windowId = `file-${file.id}`;
+
+    if (file.appType === 'chess-stats') {
+      if (isMobile) {
+        openMobileScreen({
+          title: file.name,
+          appType: 'chess-stats',
+        });
+        return;
+      }
+
+      const existingWindow = windows.find((window) => window.id === windowId);
+      if (existingWindow) {
+        focusWindow(windowId);
+        setCurrentApp(existingWindow.title);
+        return;
+      }
+
+      openWindow({
+        id: windowId,
+        title: file.name,
+        appType: 'chess-stats',
+        position: { x: 220, y: 130 },
+        size: { width: 860, height: 620 },
+        isMinimized: false,
+        isMaximized: false,
+      });
+      setCurrentApp(file.name);
+      return;
+    }
+
     if (isMobile) {
       if (file.fileType === 'img') {
         openMobileScreen({
@@ -1042,6 +1121,8 @@ function App() {
         );
       case 'achievements':
         return <Achievements achievements={achievementDefinitions} unlockedIds={achievementsSet} />;
+      case 'chess-stats':
+        return <ChessStats />;
       default:
         return <div>Unknown app type</div>;
     }
@@ -1219,6 +1300,8 @@ function App() {
             </div>
           </div>
         )}
+
+        <BootScreen isVisible={isBootVisible} isFading={isBootFading} />
       </div>
     );
   }
@@ -1324,6 +1407,8 @@ function App() {
           </div>
         </div>
       )}
+
+      <BootScreen isVisible={isBootVisible} isFading={isBootFading} />
     </div>
   );
 }

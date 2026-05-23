@@ -49,6 +49,40 @@
   100% { transform: translate(0); }
 }
 
+@keyframes boot-logo {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes boot-loader-track {
+  0% {
+    transform: scaleX(0.08);
+    opacity: 0.68;
+  }
+  35% {
+    transform: scaleX(0.42);
+    opacity: 0.82;
+  }
+  70% {
+    transform: scaleX(0.78);
+    opacity: 0.94;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
 .animate-window-open {
   animation: window-open 0.2s ease-out;
 }
@@ -68,4 +102,79 @@ body {
   -moz-osx-font-smoothing: grayscale;
   color: var(--color-text);
   background: #020617;
+}
+
+.boot-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(74, 222, 128, 0.14), transparent 20%),
+    linear-gradient(180deg, #010603 0%, #03140a 100%);
+  transition: opacity 420ms ease;
+}
+
+.boot-screen--fade {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.boot-screen__glow {
+  position: absolute;
+  width: min(52vw, 420px);
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(74, 222, 128, 0.2) 0%, rgba(74, 222, 128, 0.05) 32%, transparent 70%);
+  filter: blur(18px);
+}
+
+.boot-screen__content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  width: min(82vw, 320px);
+  animation: boot-logo 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.boot-screen__portrait {
+  width: min(72vw, 220px);
+  max-height: 180px;
+  object-fit: contain;
+}
+
+.boot-screen__loader {
+  width: 100%;
+  height: 6px;
+  padding: 1px;
+  border-radius: 9999px;
+  background: rgba(74, 222, 128, 0.14);
+  box-shadow:
+    inset 0 0 0 1px rgba(74, 222, 128, 0.14),
+    0 10px 30px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.boot-screen__loader-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: left center;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, rgba(74, 222, 128, 0.72), rgba(134, 239, 172, 0.98));
+  animation: boot-loader-track 2.15s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.boot-screen__fallback {
+  margin-top: -0.25rem;
+  font-family: "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(134, 239, 172, 0.7);
 }
