@@ -239,22 +239,40 @@ https://leetcode.com/u/gaxxrav/`
     name: 'Experience',
     type: 'folder',
     icon: '💼',
-    content: portfolioContent.experiences.map(exp => ({
-      id: exp.id,
-      name: exp.company,
-      type: 'folder' as const,
-      icon: '📂',
-      content: [
-        {
-          id: `${exp.id}-details`,
-          name: 'details.txt',
-          type: 'file' as const,
-          icon: '📄',
-          fileType: 'txt' as const,
-          fileContent: `${exp.role}\n${exp.period}\n\n${exp.description}\n\nTechnologies: ${exp.technologies}`
-        }
-      ]
-    }))
+    content: [
+      ...portfolioContent.experiences.map(exp => ({
+        id: exp.id,
+        name: exp.company,
+        type: 'folder' as const,
+        icon: '📂',
+        content: [
+          {
+            id: `${exp.id}-details`,
+            name: 'details.txt',
+            type: 'file' as const,
+            icon: '📄',
+            fileType: 'txt' as const,
+            fileContent: `${exp.role}\n${exp.period}\n\n${exp.description}\n\nTechnologies: ${exp.technologies}`
+          }
+        ]
+      })),
+      {
+        id: 'personal',
+        name: '* Personal *',
+        type: 'folder',
+        icon: '📂',
+        content: [
+          {
+            id: 'personal-details',
+            name: 'details.txt',
+            type: 'file' as const,
+            icon: '📄',
+            fileType: 'txt' as const,
+            fileContent: `- Represented my college in Baseball and Cricket tournaments`
+          }
+        ]
+      }
+    ]
   },
   projects: {
     id: 'projects',
