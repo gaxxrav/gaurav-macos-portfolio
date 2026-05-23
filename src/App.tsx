@@ -82,6 +82,22 @@ const BOOT_SCREEN_FADE_MS = 420;
 
 const wallpaperOptions: WallpaperOption[] = [
   {
+    id: 'cat-default',
+    name: 'Cat Default',
+    style: {
+      backgroundImage:
+        'linear-gradient(rgba(4, 6, 10, 0.2), rgba(4, 6, 10, 0.1)), url("/wallpapers/cat-default.png")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    },
+    previewStyle: {
+      backgroundImage:
+        'linear-gradient(rgba(4, 6, 10, 0.12), rgba(4, 6, 10, 0.04)), url("/wallpapers/cat-default.png")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    },
+  },
+  {
     id: 'midnight',
     name: 'Midnight',
     style: { background: '#0f172a' },
@@ -423,7 +439,7 @@ function App() {
   const [currentApp, setCurrentApp] = useState('Finder');
   const [easterEgg, setEasterEgg] = useState<EasterEgg>('none');
   const [konamiCode, setKonamiCode] = useState<string[]>([]);
-  const [selectedWallpaperId, setSelectedWallpaperId] = useState('black-sweater');
+  const [selectedWallpaperId, setSelectedWallpaperId] = useState('cat-default');
   const [selectedThemeId, setSelectedThemeId] = useState('terminal-green');
   const [screensaverEnabled, setScreensaverEnabled] = useState(true);
   const [screensaverDelayMs, setScreensaverDelayMs] = useState(60000);
