@@ -78,6 +78,10 @@ type MobileScreenState = RenderTarget | null;
 
 const BOOT_SCREEN_DURATION_MS = 2400;
 const BOOT_SCREEN_FADE_MS = 420;
+const MOBILE_BREAKPOINT_PX = 768;
+
+const getDefaultWallpaperId = (viewportWidth: number) =>
+  viewportWidth < MOBILE_BREAKPOINT_PX ? 'catmobile' : 'cat-default';
 
 const wallpaperOptions: WallpaperOption[] = [
   {
@@ -92,6 +96,22 @@ const wallpaperOptions: WallpaperOption[] = [
     previewStyle: {
       backgroundImage:
         'linear-gradient(rgba(4, 6, 10, 0.12), rgba(4, 6, 10, 0.04)), url("/wallpapers/cat-default.png")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    },
+  },
+  {
+    id: 'catmobile',
+    name: 'Cat Mobile',
+    style: {
+      backgroundImage:
+        'linear-gradient(rgba(4, 6, 10, 0.2), rgba(4, 6, 10, 0.1)), url("/wallpapers/catmobile.png")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    },
+    previewStyle: {
+      backgroundImage:
+        'linear-gradient(rgba(4, 6, 10, 0.12), rgba(4, 6, 10, 0.04)), url("/wallpapers/catmobile.png")',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
     },
@@ -436,7 +456,7 @@ function App() {
   } = useWindowManager();
 
   const [currentApp, setCurrentApp] = useState('Finder');
-  const [selectedWallpaperId, setSelectedWallpaperId] = useState('cat-default');
+  const [selectedWallpaperId, setSelectedWallpaperId] = useState(() => getDefaultWallpaperId(window.innerWidth));
   const [selectedThemeId, setSelectedThemeId] = useState('terminal-green');
   const [screensaverEnabled, setScreensaverEnabled] = useState(true);
   const [screensaverDelayMs, setScreensaverDelayMs] = useState(60000);
@@ -445,7 +465,7 @@ function App() {
   const [unlockedAchievementIds, setUnlockedAchievementIds] = useState<AchievementId[]>([]);
   const [hasUnreadAchievement, setHasUnreadAchievement] = useState(false);
   const [achievementNotification, setAchievementNotification] = useState<AchievementNotification | null>(null);
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < MOBILE_BREAKPOINT_PX);
   const [mobileScreen, setMobileScreen] = useState<MobileScreenState>(null);
   const [isBootVisible, setIsBootVisible] = useState(true);
   const [isBootFading, setIsBootFading] = useState(false);
@@ -586,6 +606,8 @@ function App() {
 
     if (storedWallpaperId && wallpaperOptions.some((option) => option.id === storedWallpaperId)) {
       setSelectedWallpaperId(storedWallpaperId);
+    } else {
+      setSelectedWallpaperId(getDefaultWallpaperId(window.innerWidth));
     }
 
     if (storedThemeId && themeOptions.some((option) => option.id === storedThemeId)) {
@@ -606,7 +628,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    const handleResize = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT_PX);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -1204,9 +1226,9 @@ function App() {
           ) : (
             <>
               <div className="px-1 pt-8">
-                <div className="text-4xl font-semibold tracking-tight">Gaurav</div>
-                <div className="mt-2 max-w-xs text-sm text-white/75">
-                  iPhone mode for the portfolio. Open apps, browse folders, and jump into projects without the desktop windowing.
+                <div className="text-4xl tracking-tight">
+                  <span className="font-semibold">Gaurav</span>{' '}
+                  <span className="font-normal">Murali</span>
                 </div>
               </div>
 

@@ -105,7 +105,7 @@ export const Finder = ({ initialPath = 'root', onFileOpen, onFolderOpen }: Finde
 
   return (
     <div className="h-full flex">
-      <div className="w-48 border-r p-3 bg-[var(--color-panel-soft)] border-[var(--color-border)] text-[var(--color-text)]">
+      <div className="w-32 border-r p-2 bg-[var(--color-panel-soft)] border-[var(--color-border)] text-[var(--color-text)] sm:w-48 sm:p-3">
         <div className="space-y-1">
           <div className="mb-2 px-2 text-xs font-semibold text-[var(--color-text-subtle)]">FAVORITES</div>
           {Object.values(fileSystem).map(item => (
@@ -118,7 +118,7 @@ export const Finder = ({ initialPath = 'root', onFileOpen, onFolderOpen }: Finde
                 setHistory(newHistory);
                 setHistoryIndex(newHistory.length - 1);
               }}
-              className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm transition-colors hover:bg-[var(--color-accent-soft)]"
+              className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs transition-colors hover:bg-[var(--color-accent-soft)] sm:text-sm"
             >
               <img
                 src={getAssetIcon(item)}
@@ -133,7 +133,7 @@ export const Finder = ({ initialPath = 'root', onFileOpen, onFolderOpen }: Finde
       </div>
 
       <div className="flex-1 flex flex-col bg-[var(--color-panel-bg)] text-[var(--color-text)]">
-        <div className="flex h-12 items-center gap-2 border-b px-3 bg-[var(--color-panel-soft)] border-[var(--color-border)]">
+        <div className="flex h-12 items-center gap-2 border-b px-2 bg-[var(--color-panel-soft)] border-[var(--color-border)] sm:px-3">
           <button
             onClick={goBack}
             disabled={historyIndex <= 0}
@@ -148,7 +148,8 @@ export const Finder = ({ initialPath = 'root', onFileOpen, onFolderOpen }: Finde
           >
             <ChevronRight className="w-5 h-5" />
           </button>
-          <div className="flex-1 flex items-center gap-1 text-sm">
+          <div className="flex-1 overflow-hidden">
+            <div className="flex items-center gap-1 overflow-x-auto text-xs whitespace-nowrap sm:text-sm">
             {breadcrumbs.map((crumb, i) => (
               <div key={i} className="flex items-center gap-1">
                 {i > 0 && <span className="text-[var(--color-text-subtle)]">/</span>}
@@ -166,15 +167,19 @@ export const Finder = ({ initialPath = 'root', onFileOpen, onFolderOpen }: Finde
                 </button>
               </div>
             ))}
+            </div>
           </div>
         </div>
 
-        <div className="flex-1 p-4 overflow-auto">
-          <div className="grid grid-cols-4 gap-4">
+        <div className="flex-1 overflow-auto p-3 sm:p-4">
+          <div
+            className="grid justify-center gap-3 sm:gap-4"
+            style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(96px, 96px))' }}
+          >
             {currentPath.length > 1 && (
               <button
                 onClick={navigateUp}
-                className="group flex flex-col items-center gap-2 rounded-lg p-3 transition-colors hover:bg-[var(--color-accent-soft)]"
+                className="group flex min-h-[112px] w-24 flex-col items-center gap-2 rounded-lg p-3 transition-colors hover:bg-[var(--color-accent-soft)]"
               >
                 <img
                   src="/icons/folder.png"
@@ -189,7 +194,7 @@ export const Finder = ({ initialPath = 'root', onFileOpen, onFolderOpen }: Finde
               <button
                 key={item.id}
                 onDoubleClick={() => navigateToFolder(item)}
-                className="group flex flex-col items-center gap-2 rounded-lg p-3 transition-colors hover:bg-[var(--color-accent-soft)]"
+                className="group flex min-h-[112px] w-24 flex-col items-center gap-2 rounded-lg p-3 transition-colors hover:bg-[var(--color-accent-soft)]"
               >
                 <img
                   src={getAssetIcon(item)}
@@ -197,7 +202,7 @@ export const Finder = ({ initialPath = 'root', onFileOpen, onFolderOpen }: Finde
                   draggable={false}
                   className="h-12 w-12 object-contain drop-shadow-[0_6px_14px_rgba(0,0,0,0.18)]"
                 />
-                <span className="text-sm text-center break-words max-w-full">{item.name}</span>
+                <span className="max-w-full text-center text-sm break-words">{item.name}</span>
               </button>
             ))}
           </div>
