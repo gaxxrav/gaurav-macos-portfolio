@@ -1,93 +1,141 @@
 import { Download } from 'lucide-react';
+import { portfolioContent } from '../../data/portfolio';
 
-export const PDFViewer = () => {
-  const cvContent = `
-GAURAV MURALI
-gaurav.murali3@gmail.com | +91 7026878784 | Bengaluru, Karnataka
-GitHub: https://github.com/gaxxrav
-LinkedIn: https://www.linkedin.com/in/gaurav-murali-9098bb258/
-LeetCode: https://leetcode.com/u/gaxxrav/
+const CONTACT = {
+  name: 'GAURAV MURALI',
+  email: 'gaurav.murali3@gmail.com',
+  phone: '+91 7026878784',
+  location: 'Bengaluru, Karnataka',
+  github: 'https://github.com/gaxxrav',
+  linkedIn: 'https://www.linkedin.com/in/gaurav-murali-9098bb258/',
+  leetCode: 'https://leetcode.com/u/gaxxrav/'
+};
+
+const RESUME_HEADINGS = new Set([
+  'Resume Snapshot',
+  'Education',
+  'Certifications',
+  'Languages',
+  'Backend & APIs',
+  'Frameworks & Platforms',
+  'Databases',
+  'DevOps & Cloud',
+  'AI & Machine Learning',
+  'Software Engineering & Methodologies'
+]);
+
+const parseResumeSections = (content: string) => {
+  const sections: Record<string, string[]> = {};
+  let currentSection: string | null = null;
+
+  content
+    .split('\n')
+    .map(line => line.trim())
+    .filter(Boolean)
+    .forEach(line => {
+      if (RESUME_HEADINGS.has(line)) {
+        currentSection = line;
+        sections[currentSection] = [];
+        return;
+      }
+
+      if (currentSection) {
+        sections[currentSection].push(line);
+      }
+    });
+
+  return sections;
+};
+
+const cleanListItem = (line: string) => line.replace(/^[-•>]\s*/, '').trim();
+
+const takeContributionBullets = (description: string, count = 3) =>
+  description
+    .split('\n')
+    .map(line => line.trim())
+    .filter(line => line.startsWith('•'))
+    .map(cleanListItem)
+    .slice(0, count);
+
+const resumeSections = parseResumeSections(portfolioContent.values);
+const educationLines = (resumeSections['Education'] || []).map(cleanListItem);
+const certificationLines = (resumeSections['Certifications'] || []).map(cleanListItem);
+const skillSections = [
+  'Languages',
+  'Backend & APIs',
+  'Frameworks & Platforms',
+  'Databases',
+  'DevOps & Cloud',
+  'AI & Machine Learning',
+  'Software Engineering & Methodologies'
+]
+  .map(sectionName => {
+    const lines = (resumeSections[sectionName] || []).map(cleanListItem);
+    return lines.length ? `${sectionName}: ${lines.join(', ')}` : null;
+  })
+  .filter(Boolean) as string[];
+
+const cvContent = `
+${CONTACT.name}
+${CONTACT.email} | ${CONTACT.phone} | ${CONTACT.location}
+GitHub: ${CONTACT.github}
+LinkedIn: ${CONTACT.linkedIn}
+LeetCode: ${CONTACT.leetCode}
 
 SUMMARY
 Computer Science undergraduate focused on backend systems, AI-powered products, and full-stack development.
-Experience spans production APIs, computer vision workflows, and practical product engineering with measurable outcomes.
+Built production APIs, multi-tenant platforms, and computer vision projects with measurable performance gains.
 
 EXPERIENCE
 
-Associate Software Developer Trainee | Greenway Health
-6 months
-• Contributed in a professional product engineering environment with implementation, debugging, and testing support
-• Strengthened backend development and delivery workflow fundamentals
-
-Backend Developer Intern | HappyFox
-2 months
-• Built a modular multi-tenant University Widget integrated across HappyFox products
-• Improved API response times by 40% and reduced queries by 60% through caching, query tuning, selective prefetching, and pagination
-• Delivered secure APIs with authorization, rate limiting, and custom request headers
-• Supported CI/CD, containerization, automated migrations, and high test coverage
-
-Full Stack Developer Intern | Mphasis
-3 months
-• Built a meeting notes application with speech-to-text, authentication, notes, and notification management
-• Contributed to testing and debugging across unit, integration, and user validation flows
-
-Backend Developer Intern | LSSgoBikes
-2 months
-• Worked on backend modules for a bike rental platform using Mongo Cloud database services
+${portfolioContent.experiences
+  .map(
+    exp => `${exp.role} | ${exp.company}
+${exp.period}
+${takeContributionBullets(exp.description)
+  .map(point => `• ${point}`)
+  .join('\n')}
+Tech: ${exp.technologies}`
+  )
+  .join('\n\n')}
 
 SKILLS
 
-Languages: C++, Python, JavaScript, HTML, CSS, SQL
-Backend and APIs: REST API Design, Server-side Architecture, JWT, OAuth
-Libraries and Tools: React, Node.js, Bootstrap, OpenCV, MediaPipe, Docker, Swagger, Postman, Vercel
-Frameworks: Django, Wagtail, TensorFlow, Material UI, Godot
-Databases: PostgreSQL, MongoDB, MySQL, SQLite
-Other: DSA, SDLC, Microservices Fundamentals, Technical Documentation, SIT, UAT
+${skillSections.join('\n')}
 
 EDUCATION
 
-Bachelor of Engineering in Computer Science and Engineering
-BMS Institute of Technology, Bangalore
-CGPA: 8.7/10
-
-National Public School, Yelahanka
-Percentage: 96%
+${educationLines.join('\n')}
 
 CERTIFICATIONS
 
-• CS50's Web Programming with Python and JavaScript
-• CS50's Introduction to Artificial Intelligence with Python
-• Machine Learning Specialization by DeepLearning.AI and Stanford University
+${certificationLines.map(item => `• ${item}`).join('\n')}
 
 PROJECTS
 
-• AI-Powered ISL Translation System
-  Real-time Indian Sign Language translator with gesture training and multilingual audio output
-  Achieved 1.2s average response time and 90% accuracy in controlled environments
-
-• AI Driven Food and Product Insights Platform
-  Barcode-based analysis with webcam scanning, nutritional insights, and AI-powered ingredient review
-  Reduced manual lookup time by roughly 80%
-
-• Pluggable University Widget for HappyFox
-  Multi-tenant widget and content platform with secure APIs, role-based delivery, search, and caching
+${portfolioContent.projects
+  .map(
+    project => `• ${project.name}
+  ${project.description}
+  Tech: ${project.tech}`
+  )
+  .join('\n\n')}
 
 ACHIEVEMENTS
 
-• Winner, IEEE GitHub Workshop Contest at BMSIT
-• Shortlisted for the external hackathon round at Smart India Hackathon 2024
-  `;
+${portfolioContent.testimonials
+  .map(testimonial => `• ${testimonial.subject}`)
+  .join('\n')}
+`;
 
+export const PDFViewer = () => {
   const handleDownload = () => {
-    const blob = new Blob([cvContent], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = 'gaurav-murali-cv.txt';
+    a.href = '/resume.pdf';
+    a.download = 'resume.pdf';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    URL.revokeObjectURL(url);
   };
 
   return (

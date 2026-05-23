@@ -127,7 +127,6 @@ export const Terminal = ({ onCommand, onCommandEvent }: TerminalProps) => {
       '  open <item>       - Open an item',
       '  whoami            - Who am I?',
       '  clear             - Clear terminal',
-      '  konami            - Try the konami code (↑↑↓↓←→←→BA)',
       '',
       'Tip: Use ↑↓ arrows to navigate command history'
     ],

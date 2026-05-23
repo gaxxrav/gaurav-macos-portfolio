@@ -19,8 +19,6 @@ import { Spotlight, type SpotlightResult } from './components/apps/Spotlight';
 import { useWindowManager } from './hooks/useWindowManager';
 import { FileSystemItem } from './types';
 import { fileSystem } from './data/portfolio';
-
-type EasterEgg = 'none' | 'glitch';
 type AchievementId =
   | 'first-boot'
   | 'first-spotlight'
@@ -438,8 +436,6 @@ function App() {
   } = useWindowManager();
 
   const [currentApp, setCurrentApp] = useState('Finder');
-  const [easterEgg, setEasterEgg] = useState<EasterEgg>('none');
-  const [konamiCode, setKonamiCode] = useState<string[]>([]);
   const [selectedWallpaperId, setSelectedWallpaperId] = useState('cat-default');
   const [selectedThemeId, setSelectedThemeId] = useState('terminal-green');
   const [screensaverEnabled, setScreensaverEnabled] = useState(true);
@@ -462,7 +458,6 @@ function App() {
   const playfulModesRef = useRef(new Set<string>());
   const minesweeperSessionsRef = useRef(0);
 
-  const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
   const selectedWallpaper = useMemo(
     () => wallpaperOptions.find((option) => option.id === selectedWallpaperId) ?? wallpaperOptions[0],
     [selectedWallpaperId]
@@ -677,21 +672,6 @@ function App() {
   }, [achievementNotification]);
 
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const newCode = [...konamiCode, event.key].slice(-10);
-      setKonamiCode(newCode);
-
-      if (newCode.join(',') === konamiSequence.join(',')) {
-        triggerEasterEgg('glitch');
-        setKonamiCode([]);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [konamiCode]);
-
-  useEffect(() => {
     const clearExistingTimeout = () => {
       if (inactivityTimeoutRef.current !== null) {
         window.clearTimeout(inactivityTimeoutRef.current);
@@ -726,11 +706,6 @@ function App() {
       activityEvents.forEach((eventName) => window.removeEventListener(eventName, dismissScreensaver));
     };
   }, [screensaverEnabled, screensaverDelayMs, isScreensaverActive]);
-
-  const triggerEasterEgg = (egg: EasterEgg) => {
-    setEasterEgg(egg);
-    window.setTimeout(() => setEasterEgg('none'), 3000);
-  };
 
   const handleTerminalCommand = (command: string, args: string[]) => {
     switch (command) {
@@ -1411,9 +1386,6 @@ function App() {
         </button>
       )}
 
-      {easterEgg === 'glitch' && (
-        <div className="fixed inset-0 pointer-events-none z-[10000] bg-black/10 animate-glitch" />
-      )}
 
       {isScreensaverActive && (
         <div className="fixed inset-0 z-[10001] flex items-center justify-center" style={selectedWallpaper.style}>

@@ -189,7 +189,6 @@ Key Contributions:
   ],
 
   easterEggs: [
-    'konami',
     'glitch',
     'secret'
   ]
